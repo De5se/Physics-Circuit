@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
@@ -38,11 +37,8 @@ public class CameraMotion : Singleton<CameraMotion>
     
     private bool _isMotionEnabled = true;
 
-    public bool IsCameraEnabled()
-    {
-        return (_isMotionEnabled && !_isCameraChangedPosition);
-    }
-    
+    public bool IsCameraEnabled => _isMotionEnabled && !_isCameraChangedPosition;
+
     public void EnableMotion(bool isEnabled)
     {
         _isMotionEnabled = isEnabled;
