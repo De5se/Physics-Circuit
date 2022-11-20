@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using _Scripts.UI;
 using Enums;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ namespace Elements
 {
     public class ElementController : MonoBehaviour
     {
+        [SerializeField] private ElementData elementData;
+        
         private ElementMotionState _motionState;
 
         private const float StepHoldTime = 1f;
@@ -46,7 +49,7 @@ namespace Elements
                     FinishMotion();
                     break;
                 case ElementMotionState.Settings:
-                    // ToDo open element settings   
+                    ElementSettings.Instance.OpenSettings(this, elementData);   
                     break;
                 case ElementMotionState.Released:
                     return;

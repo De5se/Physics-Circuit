@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69fd650067f74b6897148160e163f795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  elementData:
+    elementName: "\u041F\u0440\u0438\u043C\u0435\u0440 \u042D\u043B\u0435\u043C\u0435\u043D\u0442\u0430"
 --- !u!61 &5821113915036375484
 BoxCollider2D:
   m_ObjectHideFlags: 0
