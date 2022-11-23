@@ -37,9 +37,7 @@ public class CameraMotion : Singleton<CameraMotion>
     private Vector3 _targetPosition;
     
     private bool _isMotionEnabled = true;
-    private bool _isNotion;
-
-    public bool IsCameraEnabled => _isMotionEnabled && !IsCameraChangedPosition;
+    private bool _isMotion;
 
     public void EnableMotion(bool isEnabled)
     {
@@ -55,7 +53,7 @@ public class CameraMotion : Singleton<CameraMotion>
         {
             OnGetMouseDown();
         }
-        if (_isNotion)
+        if (Input.GetMouseButton(0) && _isMotion)
         {
             OnGetMouseButton();
         }
@@ -71,8 +69,10 @@ public class CameraMotion : Singleton<CameraMotion>
     
     private void OnGetMouseDown()
     {
+        IsCameraChangedPosition = false;
+        
         if (EventSystem.current.IsPointerOverGameObject()) return;
-        _isNotion = true;
+        _isMotion = true;
         _startTouchPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
     }
     
@@ -91,9 +91,9 @@ public class CameraMotion : Singleton<CameraMotion>
     
     private void OnGetMouseUp()
     {
-        _isNotion = false;
-        IsCameraChangedPosition = false;
-        
+        if (!_isMotion){return;}
+        _isMotion = false;
+
         if (_motionTween.IsActive())
         {
             GiveInertia();
