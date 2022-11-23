@@ -15,20 +15,17 @@ namespace Elements
         private const float StepHoldTime = 1f;
         private WaitForSeconds _waitForHoldStep;
 
-        private Vector3 _startTouchPosition;
-        
         private readonly Vector2 _offset = new(0, 1f);
-        private bool _isMotion = false;
+        private bool _isMotion;
         
         private void OnMouseDown()
         {
-            _startTouchPosition = Input.mousePosition;
             StartCoroutine(OnHold());
         }
 
         private void OnMouseDrag()
         {
-            if (Input.mousePosition == _startTouchPosition)
+            if (CameraMotion.Instance.IsCameraChangedPosition == false)
             {
                 return;
             }

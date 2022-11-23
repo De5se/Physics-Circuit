@@ -23,7 +23,7 @@ public class CameraMotion : Singleton<CameraMotion>
     /// <summary>
     /// Used for opening room windows
     /// </summary>
-    private bool _isCameraChangedPosition;
+    public bool IsCameraChangedPosition { get; private set; }
     private Tween _motionTween;
     private Tween _zoomTween;
 
@@ -39,7 +39,7 @@ public class CameraMotion : Singleton<CameraMotion>
     private bool _isMotionEnabled = true;
     private bool _isNotion;
 
-    public bool IsCameraEnabled => _isMotionEnabled && !_isCameraChangedPosition;
+    public bool IsCameraEnabled => _isMotionEnabled && !IsCameraChangedPosition;
 
     public void EnableMotion(bool isEnabled)
     {
@@ -92,7 +92,7 @@ public class CameraMotion : Singleton<CameraMotion>
     private void OnGetMouseUp()
     {
         _isNotion = false;
-        _isCameraChangedPosition = false;
+        IsCameraChangedPosition = false;
         
         if (_motionTween.IsActive())
         {
@@ -112,7 +112,7 @@ public class CameraMotion : Singleton<CameraMotion>
     
     private void MoveCamera(float factor)
     {
-        _isCameraChangedPosition = _direction.magnitude > 0;
+        IsCameraChangedPosition = _direction.magnitude > 0;
         
         _targetPosition = mainCamera.transform.position;
         _targetPosition.x = Mathf.Clamp(_targetPosition.x + _direction.x * factor, boundsX.x, boundsX.y);
