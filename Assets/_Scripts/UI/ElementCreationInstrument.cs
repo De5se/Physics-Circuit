@@ -27,6 +27,11 @@ namespace _Scripts.UI
             {
                 OnMouseDown();
             }
+
+            if (Input.GetMouseButton(0))
+            {
+                OnGetMouseButton();
+            }
             if (Input.GetMouseButtonUp(0))
             {
                 OnMouseUp();
@@ -38,10 +43,14 @@ namespace _Scripts.UI
             _canBeCreated = _toggle.isOn && EventSystem.current.IsPointerOverGameObject() == false;
         }
 
+        private void OnGetMouseButton()
+        {
+            _canBeCreated = _canBeCreated &&  CameraMotion.Instance.IsCameraChangedPosition == false;
+        }
+
         private void OnMouseUp()
         {
-            _canBeCreated = CameraMotion.Instance.IsCameraChangedPosition == false
-                            && _canBeCreated 
+            _canBeCreated = _canBeCreated 
                             && EventSystem.current.IsPointerOverGameObject() == false;
             
             if (!_canBeCreated)
