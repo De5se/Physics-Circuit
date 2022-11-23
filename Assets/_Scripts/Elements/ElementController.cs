@@ -49,8 +49,6 @@ namespace Elements
                     FinishMotion();
                     break;
                 case ElementMotionState.Settings:
-                    ElementSettings.Instance.OpenSettings(this, elementData);   
-                    break;
                 case ElementMotionState.Released:
                     return;
                 default:
@@ -107,6 +105,7 @@ namespace Elements
             yield return _waitForHoldStep;
             //ToDo vibration
             _motionState = ElementMotionState.Settings;
+            WindowsController.Instance.OpenElementsSettings(this, elementData);  
         }
         
         private void ResetState()
