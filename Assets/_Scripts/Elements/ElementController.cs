@@ -17,7 +17,24 @@ namespace Elements
 
         private readonly Vector2 _offset = new(0, 1f);
         private bool _isMotion;
-        
+
+        private void Start()
+        {
+            _waitForHoldStep = new WaitForSeconds(StepHoldTime);
+        }
+        private void Update()
+        {
+            if (_isMotion)
+            {
+                MoveElement();
+            }
+            if (Input.GetMouseButtonUp(0))
+            {
+                OnMouseButtonUp();
+            }
+        }
+
+        #region Mouse Events
         private void OnMouseDown()
         {
             StartCoroutine(OnHold());
@@ -51,26 +68,12 @@ namespace Elements
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            ResetState();
+            StopAllCoroutines();
+            _motionState = ElementMotionState.Released;
         }
-
+        #endregion
         
-        private void Start()
-        {
-            _waitForHoldStep = new WaitForSeconds(StepHoldTime);
-        }
-        private void Update()
-        {
-            if (_isMotion)
-            {
-                MoveElement();
-            }
-            if (Input.GetMouseButtonUp(0))
-            {
-                OnMouseButtonUp();
-            }
-        }
-
+        #region Element Motion
         private void EnableMotion(bool isEnabled)
         {
             _isMotion = isEnabled;
@@ -93,7 +96,8 @@ namespace Elements
                 RoundToEvenNumber(targetPosition.x),
                 RoundToEvenNumber(targetPosition.y));
         }
-
+        #endregion
+        
         private IEnumerator OnHold()
         {
             yield return _waitForHoldStep;
@@ -103,12 +107,6 @@ namespace Elements
             //ToDo vibration
             _motionState = ElementMotionState.Settings;
             WindowsController.Instance.OpenElementsSettings(this, elementData);  
-        }
-        
-        private void ResetState()
-        {
-            StopAllCoroutines();
-            _motionState = ElementMotionState.Released;
         }
 
         private static int RoundToEvenNumber(float num)
