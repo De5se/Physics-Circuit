@@ -59,6 +59,11 @@ namespace Elements
             ResetState();
         }
 
+        
+        private void Start()
+        {
+            _waitForHoldStep = new WaitForSeconds(StepHoldTime);
+        }
         private void Update()
         {
             if (_isMotion)
@@ -94,11 +99,6 @@ namespace Elements
                 RoundToEvenNumber(targetPosition.y));
         }
 
-        private void Start()
-        {
-            _waitForHoldStep = new WaitForSeconds(StepHoldTime);
-        }
-        
         private IEnumerator OnHold()
         {
             yield return _waitForHoldStep;
@@ -115,7 +115,7 @@ namespace Elements
             _motionState = ElementMotionState.Released;
         }
 
-        private float RoundToEvenNumber(float num)
+        private static int RoundToEvenNumber(float num)
         {
             var intValue = (int) Math.Round(num);
             // If number is odd we can add 1 and it will even

@@ -1,5 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CameraMotion : Singleton<CameraMotion>
 {
@@ -36,6 +37,7 @@ public class CameraMotion : Singleton<CameraMotion>
     private Vector3 _targetPosition;
     
     private bool _isMotionEnabled = true;
+    private bool _isNotion;
 
     public bool IsCameraEnabled => _isMotionEnabled && !_isCameraChangedPosition;
 
@@ -53,7 +55,7 @@ public class CameraMotion : Singleton<CameraMotion>
         {
             OnGetMouseDown();
         }
-        if (Input.GetMouseButton(0))
+        if (_isNotion)
         {
             OnGetMouseButton();
         }
@@ -69,6 +71,8 @@ public class CameraMotion : Singleton<CameraMotion>
     
     private void OnGetMouseDown()
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+        _isNotion = true;
         _startTouchPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
     }
     
@@ -87,6 +91,7 @@ public class CameraMotion : Singleton<CameraMotion>
     
     private void OnGetMouseUp()
     {
+        _isNotion = false;
         _isCameraChangedPosition = false;
         
         if (_motionTween.IsActive())
