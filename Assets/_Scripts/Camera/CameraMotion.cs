@@ -1,5 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CameraMotion : Singleton<CameraMotion>
 {
@@ -22,7 +23,7 @@ public class CameraMotion : Singleton<CameraMotion>
     /// <summary>
     /// Used for opening room windows
     /// </summary>
-    private bool _isCameraChangedPosition;
+    public bool IsCameraChangedPosition { get; private set; }
     private Tween _motionTween;
     private Tween _zoomTween;
 
@@ -36,8 +37,7 @@ public class CameraMotion : Singleton<CameraMotion>
     private Vector3 _targetPosition;
     
     private bool _isMotionEnabled = true;
-
-    public bool IsCameraEnabled => _isMotionEnabled && !_isCameraChangedPosition;
+    private bool _isMotion;
 
     public void EnableMotion(bool isEnabled)
     {
@@ -53,7 +53,7 @@ public class CameraMotion : Singleton<CameraMotion>
         {
             OnGetMouseDown();
         }
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && _isMotion)
         {
             OnGetMouseButton();
         }
@@ -69,6 +69,10 @@ public class CameraMotion : Singleton<CameraMotion>
     
     private void OnGetMouseDown()
     {
+        IsCameraChangedPosition = false;
+        
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+        _isMotion = true;
         _startTouchPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
     }
     
@@ -87,8 +91,9 @@ public class CameraMotion : Singleton<CameraMotion>
     
     private void OnGetMouseUp()
     {
-        _isCameraChangedPosition = false;
-        
+        if (!_isMotion){return;}
+        _isMotion = false;
+
         if (_motionTween.IsActive())
         {
             GiveInertia();
@@ -107,7 +112,7 @@ public class CameraMotion : Singleton<CameraMotion>
     
     private void MoveCamera(float factor)
     {
-        _isCameraChangedPosition = _direction.magnitude > 0;
+        IsCameraChangedPosition = _direction.magnitude > 0;
         
         _targetPosition = mainCamera.transform.position;
         _targetPosition.x = Mathf.Clamp(_targetPosition.x + _direction.x * factor, boundsX.x, boundsX.y);

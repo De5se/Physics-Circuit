@@ -1,19 +1,18 @@
-﻿using Elements;
+﻿using System;
+using Elements;
 using TMPro;
 using UnityEngine;
 
 namespace _Scripts.UI
 {
-    public class ElementSettings : Singleton<ElementSettings>
+    public class ElementSettings : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI elementsNameText;
-        [SerializeField] private GameObject content;
         
         private ElementController _currentElement;
         
         public void OpenSettings(ElementController elementController, ElementData elementData)
         {
-            content.gameObject.SetActive(true);
             _currentElement = elementController;
             elementsNameText.text = elementData.ElementName;
             
@@ -21,24 +20,26 @@ namespace _Scripts.UI
             // ToDo set buttons listeners
         }
         
-        
-        public void CloseSettings(){}
-
-
-
-        private void RotateElement()
+        public void CloseSettings()
         {
-            
+            WindowsController.Instance.CloseElementsSettings();
         }
 
-        private void DuplicateElement()
+
+
+        public void RotateElement()
         {
-            
+            throw new NotImplementedException();
         }
 
-        private void RemoveElement()
+        public void DuplicateElement()
         {
-            
+            throw new NotImplementedException();
+        }
+
+        public void RemoveElement()
+        {
+            throw new NotImplementedException();
         }
     }
 }

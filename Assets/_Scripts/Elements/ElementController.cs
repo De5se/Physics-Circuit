@@ -15,50 +15,16 @@ namespace Elements
         private const float StepHoldTime = 1f;
         private WaitForSeconds _waitForHoldStep;
 
-        private Vector3 _startTouchPosition;
-        
         private readonly Vector2 _offset = new(0, 1f);
-        private bool _isMotion = false;
-        
-        private void OnMouseDown()
-        {
-            _startTouchPosition = Input.mousePosition;
-            StartCoroutine(OnHold());
-        }
+        private bool _isMotion;
 
-        private void OnMouseDrag()
-        {
-            if (Input.mousePosition == _startTouchPosition)
-            {
-                return;
-            }
-            
-            StopAllCoroutines();
-            if (!_isMotion && _motionState == ElementMotionState.Motion)
-            {
-                Debug.Log(gameObject.name + " motion enabled");
-                EnableMotion(true);
-            }
-        }
-        
-        private void OnMouseButtonUp()
-        {
-            switch (_motionState)
-            {
-                case ElementMotionState.Motion:
-                    FinishMotion();
-                    break;
-                case ElementMotionState.Settings:
-                    ElementSettings.Instance.OpenSettings(this, elementData);   
-                    break;
-                case ElementMotionState.Released:
-                    return;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            ResetState();
-        }
+        private Vector3 _startTouchPosition;
 
+        private void Start()
+        {
+            _waitForHoldStep = new WaitForSeconds(StepHoldTime);
+            transform.position = GetRoundedPosition(transform.position);
+        }
         private void Update()
         {
             if (_isMotion)
@@ -71,55 +37,74 @@ namespace Elements
             }
         }
 
-        private void EnableMotion(bool isEnabled)
+        #region Mouse Events
+        private void OnMouseDown()
         {
-            _isMotion = isEnabled;
-            CameraMotion.Instance.EnableMotion(!isEnabled);
+            _startTouchPosition = Input.mousePosition;
+            StartCoroutine(OnHold());
         }
+
+        private void OnMouseDrag()
+        {
+            if (_startTouchPosition == Input.mousePosition)
+            {
+                return;
+            }
+            if (_motionState == ElementMotionState.Motion)
+            {
+                _isMotion = true;
+            }
+            
+            StopAllCoroutines();
+        }
+        
+        private void OnMouseButtonUp()
+        {
+            if (_motionState == ElementMotionState.Motion)
+                FinishMotion();
+
+            StopAllCoroutines();
+            _motionState = ElementMotionState.Released;
+        }
+        #endregion
+        
+        #region Element Motion
         private void MoveElement()
         {
-            if (Camera.main == null) return;
-            
-            var targetPosition = (Vector2) Camera.main.ScreenToWorldPoint(Input.mousePosition) + _offset;
+            var targetPosition = (Vector2) Camera.main!.ScreenToWorldPoint(Input.mousePosition) + _offset;
             transform.position = targetPosition;
         }
         private void FinishMotion()
         {
-            EnableMotion(false);
-            if (Camera.main == null) return;
+            _isMotion = false;
+            CameraMotion.Instance.EnableMotion(true);
             // Round position to even
-            var targetPosition = (Vector2) Camera.main.ScreenToWorldPoint(Input.mousePosition) + _offset;
-            transform.position = new Vector2(
-                RoundToEvenNumber(targetPosition.x),
-                RoundToEvenNumber(targetPosition.y));
+            var targetPosition = (Vector2) Camera.main!.ScreenToWorldPoint(Input.mousePosition) + _offset;
+            transform.position = GetRoundedPosition(targetPosition);
         }
-
-        private void Start()
-        {
-            _waitForHoldStep = new WaitForSeconds(StepHoldTime);
-        }
+        #endregion
         
         private IEnumerator OnHold()
         {
             yield return _waitForHoldStep;
             //ToDo vibration
             _motionState = ElementMotionState.Motion;
+            CameraMotion.Instance.EnableMotion(false);
             yield return _waitForHoldStep;
+            CameraMotion.Instance.EnableMotion(true);
             //ToDo vibration
             _motionState = ElementMotionState.Settings;
-        }
-        
-        private void ResetState()
-        {
-            StopAllCoroutines();
-            _motionState = ElementMotionState.Released;
+            WindowsController.Instance.OpenElementsSettings(this, elementData);  
         }
 
-        private float RoundToEvenNumber(float num)
+        private static Vector2 GetRoundedPosition(Vector2 currentPosition)
         {
-            var intValue = (int) Math.Round(num);
-            // If number is odd we can add 1 and it will even
-            return intValue + intValue % 2;
+            return new Vector2(RoundToEven(currentPosition.x), RoundToEven(currentPosition.y));
+        }
+
+        private static float RoundToEven(float num)
+        {
+            return (int) num + (int) num % 2;
         }
     }
 }
