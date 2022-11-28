@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   elementData:
     elementName: "\u0418\u0441\u0442\u043E\u0447\u043D\u0438\u043A \u043F\u0438\u0442\u0430\u043D\u0438\u044F"
+  isRoundPositionDisabled: 0
 --- !u!61 &5821113915036375484
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -98,7 +99,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5821113915103083743}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1

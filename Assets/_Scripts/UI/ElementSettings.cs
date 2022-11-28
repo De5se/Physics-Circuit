@@ -12,6 +12,7 @@ namespace _Scripts.UI
         [SerializeField] private TMP_InputField inputField;
         
         private ElementController _currentElement;
+        private const float RotateAngle = 90f;
         
         public void OpenSettings(ElementController elementController, ElementData elementData)
         {
@@ -29,7 +30,7 @@ namespace _Scripts.UI
 
         public void RotateElement()
         {
-            throw new NotImplementedException();
+            _currentElement.transform.Rotate(Vector3.back, RotateAngle);
         }
 
         public void DuplicateElement()
@@ -39,7 +40,8 @@ namespace _Scripts.UI
 
         public void RemoveElement()
         {
-            throw new NotImplementedException();
+            CloseSettings();
+            Destroy(_currentElement.gameObject);
         }
     }
 }
