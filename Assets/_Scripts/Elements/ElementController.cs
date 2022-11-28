@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using _Scripts.UI;
 using Enums;
 using UnityEngine;
@@ -9,6 +8,7 @@ namespace Elements
     public class ElementController : MonoBehaviour
     {
         [SerializeField] private ElementData elementData;
+        [SerializeField] private bool isRoundPositionDisabled;
         
         private ElementMotionState _motionState;
 
@@ -97,9 +97,9 @@ namespace Elements
             WindowsController.Instance.OpenElementsSettings(this, elementData);  
         }
 
-        private static Vector2 GetRoundedPosition(Vector2 currentPosition)
+        private Vector2 GetRoundedPosition(Vector2 currentPosition)
         {
-            return new Vector2(RoundToEven(currentPosition.x), RoundToEven(currentPosition.y));
+            return isRoundPositionDisabled ? currentPosition : new Vector2(RoundToEven(currentPosition.x), RoundToEven(currentPosition.y));
         }
 
         private static float RoundToEven(float num)

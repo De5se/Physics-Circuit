@@ -1,13 +1,15 @@
-﻿using System;
+﻿
+using System;
 using Elements;
 using TMPro;
 using UnityEngine;
 
 namespace _Scripts.UI
 {
-    public class ElementSettings : MonoBehaviour
+    public class ElementSettings : Singleton<ElementSettings>
     {
         [SerializeField] private TextMeshProUGUI elementsNameText;
+        [SerializeField] private TMP_InputField inputField;
         
         private ElementController _currentElement;
         
@@ -24,8 +26,6 @@ namespace _Scripts.UI
         {
             WindowsController.Instance.CloseElementsSettings();
         }
-
-
 
         public void RotateElement()
         {

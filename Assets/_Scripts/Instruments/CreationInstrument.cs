@@ -1,6 +1,3 @@
-using System;
-using _Scripts.Elements;
-using Elements;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -8,10 +5,8 @@ using UnityEngine.UI;
 namespace _Scripts.UI
 {
     [RequireComponent(typeof(Toggle))]
-    public class ElementCreationInstrument : MonoBehaviour
+    public class CreationInstrument : MonoBehaviour
     {
-        [SerializeField] private ElementController elementPrefab;
-    
         private Toggle _toggle;
 
         private bool _canBeCreated;
@@ -57,8 +52,12 @@ namespace _Scripts.UI
             {
                 return;
             }
-            ElementsCreator.Instance.CreateElement(elementPrefab, 
-                Camera.main!.ScreenToWorldPoint(Input.mousePosition));
+            Create();
+        }
+
+        protected virtual void Create()
+        {
+            
         }
     }
 }
