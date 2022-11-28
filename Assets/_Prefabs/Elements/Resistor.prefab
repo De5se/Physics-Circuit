@@ -47,7 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   elementData:
-    elementName: "\u041A\u043E\u043D\u0434\u0435\u043D\u0441\u0430\u0442\u043E\u0440"
+    elementName: "\u0420\u0435\u0437\u0438\u0441\u0442\u043E\u0440"
+  isRoundPositionDisabled: 0
 --- !u!61 &5821113915036375484
 BoxCollider2D:
   m_ObjectHideFlags: 0

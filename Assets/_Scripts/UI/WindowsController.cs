@@ -17,7 +17,6 @@ namespace _Scripts.UI
 
         public void OpenElementsSettings(ElementController elementController, ElementData elementData)
         {
-            buttonsPanel.SetActive(false);
             elementsPanel.SetActive(false);
             elementSettings.gameObject.SetActive(true);
             

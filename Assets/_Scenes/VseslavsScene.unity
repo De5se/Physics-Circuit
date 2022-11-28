@@ -424,19 +424,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 35172270}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1293760867}
-        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
-        m_MethodName: Play
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Open
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &35172270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1033,7 +1021,7 @@ RectTransform:
   - {fileID: 935874445}
   - {fileID: 972438295}
   m_Father: {fileID: 1293760866}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -1902,7 +1890,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonsPanel: {fileID: 1282227468}
-  elementsPanel: {fileID: 458209319}
+  elementsPanel: {fileID: 1293760865}
   elementSettings: {fileID: 1081157513}
 --- !u!1 &972438294
 GameObject:
@@ -2107,7 +2095,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1293760866}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -2157,19 +2145,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1080019151}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1293760867}
-        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
-        m_MethodName: Play
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Close
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1080019151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2587,6 +2563,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1293760866}
   - component: {fileID: 1293760867}
+  - component: {fileID: 1293760868}
   m_Layer: 0
   m_Name: Instruments
   m_TagString: Untagged
@@ -2606,8 +2583,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1080019149}
   - {fileID: 458209320}
+  - {fileID: 1080019149}
   - {fileID: 35172268}
   m_Father: {fileID: 964774508}
   m_RootOrder: 1
@@ -2637,6 +2614,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1293760868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293760865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 293501cd29b549a28aba7714d74172a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  instrumentsPanelAnimator: {fileID: 1293760867}
+  toggleGroup: {fileID: 458209324}
+  openButton: {fileID: 35172269}
+  closeButton: {fileID: 1080019150}
 --- !u!1 &1343095671
 GameObject:
   m_ObjectHideFlags: 0
@@ -2770,7 +2763,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -4004,7 +3997,7 @@ MonoBehaviour:
   m_InputType: 0
   m_AsteriskChar: 42
   m_KeyboardType: 0
-  m_LineType: 0
+  m_LineType: 1
   m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
   m_CharacterValidation: 0

@@ -10,11 +10,19 @@ namespace _Scripts.UI
         private Toggle _toggle;
 
         private bool _canBeCreated;
+
+        private Vector3 _startPosition;
         
         private void Start()
         {
             _toggle = GetComponent<Toggle>();
+            _toggle.onValueChanged.AddListener(ToggleListener);
         }
+
+        protected virtual void ToggleListener(bool isOn)
+        {
+        }
+
 
         private void Update()
         {
@@ -36,11 +44,12 @@ namespace _Scripts.UI
         private void OnMouseDown()
         {
             _canBeCreated = _toggle.isOn && EventSystem.current.IsPointerOverGameObject() == false;
+            _startPosition = Input.mousePosition;
         }
 
         private void OnGetMouseButton()
         {
-            _canBeCreated = _canBeCreated &&  CameraMotion.Instance.IsCameraChangedPosition == false;
+            _canBeCreated = _canBeCreated && (_startPosition == Input.mousePosition);
         }
 
         private void OnMouseUp()
