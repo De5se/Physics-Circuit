@@ -31,7 +31,7 @@ namespace Elements
                 transform.position = GetRoundedPosition(transform.position);
             }
         }
-        private void Update()
+        private protected virtual void Update()
         {
             if (_isMotion)
             {
