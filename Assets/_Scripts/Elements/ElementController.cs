@@ -9,8 +9,9 @@ namespace Elements
     {
         [SerializeField] private ElementData elementData;
         [SerializeField] private bool isRoundPositionDisabled;
+        [SerializeField] private bool isMotionDisabled;
         
-        private ElementMotionState _motionState;
+        private protected ElementMotionState MotionState;
 
         private const float StepHoldTime = 1f;
         private WaitForSeconds _waitForHoldStep;
@@ -20,10 +21,15 @@ namespace Elements
 
         private Vector3 _startTouchPosition;
 
-        private void Start()
+        private protected bool IsMouseChangedPosition => _startTouchPosition == Input.mousePosition;
+
+        private protected virtual void Start()
         {
             _waitForHoldStep = new WaitForSeconds(StepHoldTime);
-            transform.position = GetRoundedPosition(transform.position);
+            if (isRoundPositionDisabled)
+            {
+                transform.position = GetRoundedPosition(transform.position);
+            }
         }
         private void Update()
         {
@@ -46,11 +52,11 @@ namespace Elements
 
         private void OnMouseDrag()
         {
-            if (_startTouchPosition == Input.mousePosition)
+            if (IsMouseChangedPosition)
             {
                 return;
             }
-            if (_motionState == ElementMotionState.Motion)
+            if (MotionState == ElementMotionState.Motion)
             {
                 _isMotion = true;
             }
@@ -60,11 +66,11 @@ namespace Elements
         
         private void OnMouseButtonUp()
         {
-            if (_motionState == ElementMotionState.Motion)
+            if (MotionState == ElementMotionState.Motion)
                 FinishMotion();
 
             StopAllCoroutines();
-            _motionState = ElementMotionState.Released;
+            MotionState = ElementMotionState.Released;
         }
         #endregion
         
@@ -88,12 +94,15 @@ namespace Elements
         {
             yield return _waitForHoldStep;
             //ToDo vibration
-            _motionState = ElementMotionState.Motion;
-            CameraMotion.Instance.EnableMotion(false);
+            if (isMotionDisabled == false)
+            {
+                MotionState = ElementMotionState.Motion;
+                CameraMotion.Instance.EnableMotion(false);
+            }
             yield return _waitForHoldStep;
             CameraMotion.Instance.EnableMotion(true);
             //ToDo vibration
-            _motionState = ElementMotionState.Settings;
+            MotionState = ElementMotionState.Settings;
             WindowsController.Instance.OpenElementsSettings(this, elementData);  
         }
 
