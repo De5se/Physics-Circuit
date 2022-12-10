@@ -23,8 +23,8 @@ namespace _Scripts.Elements
             }
             if (_previousConnectionPoint != connectionPoint)
             {
-                connectionPoint.AddConnectionPoint(_previousConnectionPoint);
-                _previousConnectionPoint.AddConnectionPoint(connectionPoint);
+                _previousConnectionPoint.AddElementsFromThis(connectionPoint);
+                connectionPoint.AddElementsToThis(_previousConnectionPoint);
             }
             _previousConnectionPoint.EnableSelectionCircle(false);
             _previousConnectionPoint = null;
