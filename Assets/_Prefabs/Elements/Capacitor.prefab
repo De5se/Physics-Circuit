@@ -196,6 +196,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5344071208944810625, guid: a8b1596798d747248b155de27d33f5f8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.4
+      objectReference: {fileID: 0}
     - target: {fileID: 5821113915036375473, guid: a8b1596798d747248b155de27d33f5f8, type: 3}
       propertyPath: m_Name
       value: WireConnectionPoint
@@ -250,7 +254,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5821113915103083740, guid: a8b1596798d747248b155de27d33f5f8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.4
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8b1596798d747248b155de27d33f5f8, type: 3}
