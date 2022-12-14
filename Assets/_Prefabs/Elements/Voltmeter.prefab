@@ -133,6 +133,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   elementData:
     elementName: "\u041A\u043E\u043D\u0434\u0435\u043D\u0441\u0430\u0442\u043E\u0440"
+    constValue: 0
+    value: 0
   isRoundPositionDisabled: 0
   isMotionDisabled: 0
 --- !u!61 &5821113915036375484

@@ -1,4 +1,5 @@
 ﻿using Elements;
+using Enums;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -6,28 +7,29 @@ namespace _Scripts.Elements
 {
     public class ElementsCreator : Singleton<ElementsCreator>
     {
-        private ConnectionPoint _previousConnectionPoint;
+        private CircuitElement _previousCircuitElement;
         
-        public void CreateElement(ElementController targetElement, Vector2 creationPosition)
+        public void CreateElement(ElementWithMotion targetElement, Vector2 creationPosition)
         {
             Instantiate(targetElement, creationPosition, quaternion.identity, transform);
         }
 
-        public void CreateWire(ConnectionPoint connectionPoint)
+        public void CreateWire(CircuitElement circuitElement)
         {
-            if (_previousConnectionPoint == null)
+            if (_previousCircuitElement == null)
             {
-                _previousConnectionPoint = connectionPoint;
-                connectionPoint.EnableSelectionCircle(true);
+                _previousCircuitElement = circuitElement;
+                circuitElement.EnableSelectionCircle(true);
                 return;
             }
-            if (_previousConnectionPoint != connectionPoint)
+            if (_previousCircuitElement != circuitElement)
             {
-                _previousConnectionPoint.AddElementsFromThis(connectionPoint);
-                connectionPoint.AddElementsToThis(_previousConnectionPoint);
+                _previousCircuitElement.AddElementsFromThis(circuitElement);
+                circuitElement.AddElementsToThis(_previousCircuitElement);
+                CircuitSimulator.Instance.UpdateCircuit();
             }
-            _previousConnectionPoint.EnableSelectionCircle(false);
-            _previousConnectionPoint = null;
+            _previousCircuitElement.EnableSelectionCircle(false);
+            _previousCircuitElement = null;
         }
     }
 }

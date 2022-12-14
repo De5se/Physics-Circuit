@@ -15,12 +15,12 @@ namespace _Scripts.UI
             SetStandardLayout();
         }
 
-        public void OpenElementsSettings(ElementController elementController, ElementData elementData)
+        public void OpenElementsSettings(ElementWithMotion elementWithMotion, ElementData elementData)
         {
             elementsPanel.SetActive(false);
             elementSettings.gameObject.SetActive(true);
             
-            elementSettings.OpenSettings(elementController, elementData);
+            elementSettings.OpenSettings(elementWithMotion, elementData);
         }
 
         public void CloseElementsSettings()

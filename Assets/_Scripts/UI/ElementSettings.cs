@@ -11,12 +11,12 @@ namespace _Scripts.UI
         [SerializeField] private TextMeshProUGUI elementsNameText;
         [SerializeField] private TMP_InputField inputField;
         
-        private ElementController _currentElement;
+        private ElementWithMotion _currentElement;
         private const float RotateAngle = 90f;
         
-        public void OpenSettings(ElementController elementController, ElementData elementData)
+        public void OpenSettings(ElementWithMotion elementWithMotion, ElementData elementData)
         {
-            _currentElement = elementController;
+            _currentElement = elementWithMotion;
             elementsNameText.text = elementData.ElementName;
             
             // ToDo openAnimation

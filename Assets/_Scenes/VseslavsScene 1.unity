@@ -1182,6 +1182,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Capacitor Button
       objectReference: {fileID: 0}
+    - target: {fileID: 7271138411024684162, guid: 284f4b46fe78f904a872fc96735dc3d8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7271138411024684165, guid: 284f4b46fe78f904a872fc96735dc3d8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1200,7 +1204,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7271138411024684165, guid: 284f4b46fe78f904a872fc96735dc3d8, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7271138411024684165, guid: 284f4b46fe78f904a872fc96735dc3d8, type: 3}
       propertyPath: m_AnchorMin.x
@@ -1208,7 +1212,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7271138411024684165, guid: 284f4b46fe78f904a872fc96735dc3d8, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7271138411024684165, guid: 284f4b46fe78f904a872fc96735dc3d8, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1248,11 +1252,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7271138411024684165, guid: 284f4b46fe78f904a872fc96735dc3d8, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 67
       objectReference: {fileID: 0}
     - target: {fileID: 7271138411024684165, guid: 284f4b46fe78f904a872fc96735dc3d8, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -295
       objectReference: {fileID: 0}
     - target: {fileID: 7271138411024684165, guid: 284f4b46fe78f904a872fc96735dc3d8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2171,6 +2175,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1201128715}
   - component: {fileID: 1201128716}
+  - component: {fileID: 1201128717}
   m_Layer: 0
   m_Name: Elements
   m_TagString: Untagged
@@ -2204,6 +2209,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ccbe188445b6464fae5256952a5ccfce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1201128717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201128714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93ffbdd8e036a9243a85bede35f9442b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1216183575
@@ -2941,7 +2958,7 @@ PrefabInstance:
     - target: {fileID: 538210186558624580, guid: 284f4b46fe78f904a872fc96735dc3d8, type: 3}
       propertyPath: elementPrefab
       value: 
-      objectReference: {fileID: 5821113915036375487, guid: 6ce65a78860a6d747a8a4e63ba9c718b, type: 3}
+      objectReference: {fileID: 2273405369513721360, guid: 6ce65a78860a6d747a8a4e63ba9c718b, type: 3}
     - target: {fileID: 7271138411024684162, guid: 284f4b46fe78f904a872fc96735dc3d8, type: 3}
       propertyPath: m_Name
       value: Resistor Button
@@ -4035,7 +4052,7 @@ PrefabInstance:
     - target: {fileID: 538210186558624580, guid: 284f4b46fe78f904a872fc96735dc3d8, type: 3}
       propertyPath: elementPrefab
       value: 
-      objectReference: {fileID: 5821113915036375487, guid: 20c0981af6c189548962dbaabe74bd67, type: 3}
+      objectReference: {fileID: -4073740717449748702, guid: 20c0981af6c189548962dbaabe74bd67, type: 3}
     - target: {fileID: 7271138411024684162, guid: 284f4b46fe78f904a872fc96735dc3d8, type: 3}
       propertyPath: m_Name
       value: Source Button

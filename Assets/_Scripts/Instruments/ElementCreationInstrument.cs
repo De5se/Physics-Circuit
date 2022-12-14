@@ -6,7 +6,7 @@ namespace _Scripts.UI
 {
     public class ElementCreationInstrument : CreationInstrument
     {
-        [SerializeField] private ElementController elementPrefab;
+        [SerializeField] private ElementWithMotion elementPrefab;
         protected override void Create()
         {
             base.Create();

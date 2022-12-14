@@ -5,14 +5,19 @@ using UnityEngine;
 
 namespace Elements
 {
-    public class ElementController : MonoBehaviour
+    public class ElementWithMotion : MonoBehaviour
     {
-        [SerializeField] private ElementData elementData;
+        [SerializeField] private protected ElementData elementData;
+        [SerializeField] private bool isSourceElement;
+        
+        public bool IsSourceElement => isSourceElement;
+        
+        #region Motion variables
+        [Space]
         [SerializeField] private bool isRoundPositionDisabled;
         [SerializeField] private bool isMotionDisabled;
         
         private protected ElementMotionState MotionState;
-
         private const float StepHoldTime = 1f;
         private WaitForSeconds _waitForHoldStep;
 
@@ -20,8 +25,8 @@ namespace Elements
         private bool _isMotion;
 
         private Vector3 _startTouchPosition;
-
-        private protected bool IsMouseChangedPosition => _startTouchPosition == Input.mousePosition;
+        private bool IsMouseChangedPosition => _startTouchPosition == Input.mousePosition;
+        #endregion
 
         private protected virtual void Start()
         {
@@ -75,7 +80,7 @@ namespace Elements
         #endregion
         
         #region Element Motion
-        private void MoveElement()
+        private protected virtual void MoveElement()
         {
             var targetPosition = (Vector2) Camera.main!.ScreenToWorldPoint(Input.mousePosition) + _offset;
             transform.position = targetPosition;
@@ -115,5 +120,6 @@ namespace Elements
         {
             return (int) num + (int) num % 2;
         }
+
     }
 }
