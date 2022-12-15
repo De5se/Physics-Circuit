@@ -19,7 +19,9 @@ namespace _Scripts.Elements
         private readonly List<LineRenderer> _lines = new();
 
         private int _elementsConnectedOnInput;
-        
+
+        public int ElementsConnectedOnInput => _elementsConnectedOnInput;
+
         private protected override void Start()
         {
             base.Start();
@@ -105,44 +107,55 @@ namespace _Scripts.Elements
             elementData.ClearValues();
             _elementsConnectedOnInput = 0;
         }
-        public void UpdateValues()
+        /// <summary>
+        /// Returns true if smth changed
+        /// </summary>
+        /// <param name="increaseInputCount"></param>
+        /// <returns></returns>
+        public bool UpdateValues(bool increaseInputCount = true)
         {
             if (_elementsConnectedOnInput > _elementsToThis.Count)
             {
                 Debug.LogError("There's loop in circuit");
-                return;
+                return false;
             }
-            
-            _elementsConnectedOnInput++;
+            if (increaseInputCount)
+            {
+                _elementsConnectedOnInput++;
+            }
             if (IsSourceElement && _elementsConnectedOnInput == 0)
             {
-                UpdateNextElements();
+                return UpdateNextElements();
             }
             if (_elementsConnectedOnInput < _elementsToThis.Count || IsSourceElement)
             {
-                return;
+                return false;
             }
-            UpdateNextElements();
+            return UpdateNextElements();
         }
 
-        private void UpdateNextElements()
+        /// <summary>
+        /// Returns true if smth changed
+        /// </summary>
+        private bool UpdateNextElements()
         {
+            var result = false;
             if (_elementsFromThis.Count == 1)
             {
                 _elementsFromThis[0].elementData.ChangeValue(ElementsValue.A, elementData.Current);
-                if (_elementsFromThis[0].isConnectionPoint)
+                if (isConnectionPoint || _elementsFromThis[0].isConnectionPoint)
                 {
                     _elementsFromThis[0].elementData.ChangeValue(ElementsValue.V, elementData.Voltage);
                     _elementsFromThis[0].elementData.ChangeValue(ElementsValue.R, elementData.Resistance);
                 }
-                _elementsFromThis[0].UpdateValues();
-                return;
+                return _elementsFromThis[0].UpdateValues();
             }
             foreach (var nextElement in _elementsFromThis)
             {
                 nextElement.elementData.ChangeValue(ElementsValue.V, elementData.Voltage);
-                nextElement.UpdateValues();
+                result = result || nextElement.UpdateValues();
             }
+            return result;
         }
         
         #endregion

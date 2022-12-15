@@ -29,13 +29,17 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
         ClearValues();
         if (_source != null)
         {
-            _source.UpdateValues();
+            bool isSmthChanged = _source.UpdateValues(false);
+            while (isSmthChanged)
+            {
+                isSmthChanged = _source.UpdateValues(false);
+            }
         }
-
+        
         ElementSettings.Instance.UpdateSettingsValues();
     }
 
-    private void ClearValues()
+    public void ClearValues()
     {
         foreach (var element in _elements)
         {
