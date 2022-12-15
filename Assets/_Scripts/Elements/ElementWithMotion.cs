@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using _Scripts.UI;
 using Enums;
 using UnityEngine;
@@ -9,7 +10,9 @@ namespace Elements
     {
         [SerializeField] private protected ElementData elementData;
         [SerializeField] private bool isSourceElement;
-        
+        [SerializeField] private protected bool isConnectionPoint;
+
+        public ElementData ElementData => elementData;
         public bool IsSourceElement => isSourceElement;
         
         #region Motion variables
@@ -108,7 +111,7 @@ namespace Elements
             CameraMotion.Instance.EnableMotion(true);
             //ToDo vibration
             MotionState = ElementMotionState.Settings;
-            WindowsController.Instance.OpenElementsSettings(this, elementData);  
+            WindowsController.Instance.OpenElementsSettings(this);  
         }
 
         private Vector2 GetRoundedPosition(Vector2 currentPosition)

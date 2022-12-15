@@ -110,7 +110,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5821113915036375473}
-  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -120,7 +120,7 @@ Transform:
   - {fileID: 1366775741549542875}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &5821113915036375484
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -164,6 +164,7 @@ MonoBehaviour:
     constValue: 3
     value: 5
   isSourceElement: 0
+  isConnectionPoint: 0
   isRoundPositionDisabled: 0
   isMotionDisabled: 0
   selectionCircle: {fileID: 8188723988979191746}

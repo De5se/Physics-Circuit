@@ -1,5 +1,4 @@
-﻿using System;
-using Elements;
+﻿using Elements;
 using UnityEngine;
 
 namespace _Scripts.UI
@@ -15,12 +14,12 @@ namespace _Scripts.UI
             SetStandardLayout();
         }
 
-        public void OpenElementsSettings(ElementWithMotion elementWithMotion, ElementData elementData)
+        public void OpenElementsSettings(ElementWithMotion elementWithMotion)
         {
             elementsPanel.SetActive(false);
             elementSettings.gameObject.SetActive(true);
             
-            elementSettings.OpenSettings(elementWithMotion, elementData);
+            elementSettings.OpenSettings(elementWithMotion);
         }
 
         public void CloseElementsSettings()

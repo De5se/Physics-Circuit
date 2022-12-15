@@ -217,6 +217,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   elementData:
     elementName: "\u0421\u043E\u0435\u0434\u0438\u043D\u0435\u043D\u0438\u044F \u043F\u0440\u043E\u0432\u043E\u0434\u043E\u0432"
+    constValue: 0
+    value: 0
+  isSourceElement: 0
+  isConnectionPoint: 1
   isRoundPositionDisabled: 0
   isMotionDisabled: 0
   selectionCircle: {fileID: 3718621017706335941}

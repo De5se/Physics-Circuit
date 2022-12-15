@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using _Scripts.Elements;
+using _Scripts.UI;
 using Elements;
 
 public class CircuitSimulator : Singleton<CircuitSimulator>
@@ -30,6 +31,8 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
         {
             _source.UpdateValues();
         }
+
+        ElementSettings.Instance.UpdateSettingsValues();
     }
 
     private void ClearValues()

@@ -73,9 +73,9 @@ namespace Elements
 
         public override string ToString()
         {
-            return "A = " + Current +
-                   "\nV = " + Voltage +
-                   "\nR = " + Resistance;
+            return "A = " + (Current == null ? "_" : Current) +
+                   "\nV = " + (Voltage == null ? "_" : Voltage) +
+                   "\nR = " + (Resistance == null ? "_" : Resistance);
         }
     }
 }

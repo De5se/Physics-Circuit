@@ -36,6 +36,10 @@ namespace _Scripts.Elements
         private void OnDestroy()
         {
             CircuitSimulator.Instance.RemoveElement(this);
+            foreach (var elementToThis in _elementsToThis)
+            {
+                elementToThis.AddElementsFromThis(this);
+            }
         }
         
         #region wire creation
@@ -89,8 +93,6 @@ namespace _Scripts.Elements
                     _lines.Add(Instantiate(wire, outputPoint));
                 }
                 _lines[i].SetPosition(0, outputPoint.position);
-                /*_lines[i].SetPosition(1, 
-                    GetAnglePosition(transform.position, connectedElements[i].transform.position));*/
                 _lines[i].SetPosition(1, _elementsFromThis[i].inputPoint.position);
             }
         }
@@ -103,42 +105,43 @@ namespace _Scripts.Elements
             elementData.ClearValues();
             _elementsConnectedOnInput = 0;
         }
-        public void UpdateValues(ElementsValue valueToUpdate = ElementsValue.Hide, float? targetValue = 0)
+        public void UpdateValues()
         {
-            if (valueToUpdate != ElementsValue.Hide)
+            if (_elementsConnectedOnInput > _elementsToThis.Count)
             {
-                elementData.ChangeValue(valueToUpdate, targetValue);
+                Debug.LogError("There's loop in circuit");
+                return;
             }
             
             _elementsConnectedOnInput++;
-            if (_elementsConnectedOnInput > _elementsToThis.Count)
-            {
-                Debug.LogWarning("There's loop in circuit");
-            }
-            if (_elementsConnectedOnInput < _elementsToThis.Count)
-            {
-                if (IsSourceElement && _elementsConnectedOnInput == 0)
-                {
-                    UpdateNextElements();
-                }
-                return;
-            }
-
-            if (IsSourceElement == false)
+            if (IsSourceElement && _elementsConnectedOnInput == 0)
             {
                 UpdateNextElements();
             }
+            if (_elementsConnectedOnInput < _elementsToThis.Count || IsSourceElement)
+            {
+                return;
+            }
+            UpdateNextElements();
         }
 
         private void UpdateNextElements()
         {
             if (_elementsFromThis.Count == 1)
             {
-                _elementsFromThis[0].UpdateValues(ElementsValue.A, elementData.Current);   
+                _elementsFromThis[0].elementData.ChangeValue(ElementsValue.A, elementData.Current);
+                if (_elementsFromThis[0].isConnectionPoint)
+                {
+                    _elementsFromThis[0].elementData.ChangeValue(ElementsValue.V, elementData.Voltage);
+                    _elementsFromThis[0].elementData.ChangeValue(ElementsValue.R, elementData.Resistance);
+                }
+                _elementsFromThis[0].UpdateValues();
+                return;
             }
-            for (int i = 0; i < _elementsFromThis.Count; i++)
+            foreach (var nextElement in _elementsFromThis)
             {
-                _elementsFromThis[i].UpdateValues();
+                nextElement.elementData.ChangeValue(ElementsValue.V, elementData.Voltage);
+                nextElement.UpdateValues();
             }
         }
         
