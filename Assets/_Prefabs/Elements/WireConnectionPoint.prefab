@@ -248,7 +248,8 @@ MonoBehaviour:
   outputPoint: {fileID: 5821113915103083740}
   isRoundPositionDisabled: 0
   isMotionDisabled: 0
-  isSettingsDisabled: 0
+  isSettingsDisabled: 1
+  _lines: []
 --- !u!1 &5821113915103083743
 GameObject:
   m_ObjectHideFlags: 0

@@ -93,7 +93,7 @@ namespace Elements
             MotionState = ElementMotionState.Released;
         }
         
-        private void OnMouseUpAsButton()
+        private void OnMouseUp()
         {
             if (MotionState == ElementMotionState.Released)
             {

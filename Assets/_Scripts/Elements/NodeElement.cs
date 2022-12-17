@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using Elements;
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace _Scripts.Elements
 {
     public class NodeElement : ElementWithMotion
     {
-        private readonly List<ElementWithMotion> _elementsFromThis = new();
+        [SerializeField, DisableIf(nameof(disabled))] private List<ElementWithMotion> _elementsFromThis = new();
         private readonly List<ElementWithMotion> _elementsToThis = new();
 
-        private readonly List<LineRenderer> _lines = new();
-        
+        [SerializeField, DisableIf(nameof(disabled))] private List<LineRenderer> _lines = new();
+        private bool disabled => false;
         private string _outNode;
         public override string OutNode
         {
@@ -45,7 +46,10 @@ namespace _Scripts.Elements
             base.Update();
             for (int i = 0; i < _elementsFromThis.Count; i++)
             {
-                DrawLine(_lines[i], _elementsFromThis[i]);
+                if (_lines.Count > i)
+                {
+                    DrawLine(_lines[i], _elementsFromThis[i]);
+                }
             }
         }
 
@@ -64,10 +68,7 @@ namespace _Scripts.Elements
                 }
                 return;
             }
-            if (_lines.Count < _elementsFromThis.Count)
-            {
-                _lines.Add(Instantiate(wire, outputPoint));
-            }
+            _lines.Add(Instantiate(wire, outputPoint));
             _elementsFromThis.Add(elementWithMotion);
         }
 
