@@ -1,10 +1,14 @@
+using System;
 using System.Collections.Generic;
 using _Scripts.Elements;
 using _Scripts.UI;
+using Elements;
 using Enums;
 using SpiceSharp;
 using SpiceSharp.Components;
+using SpiceSharp.Entities;
 using SpiceSharp.Simulations;
+using UnityEngine;
 
 public class CircuitSimulator : Singleton<CircuitSimulator>
 {
@@ -54,36 +58,63 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
         ClearValues();
 
         var circuitsCount = 0;
-        /*for (int i = 0; i < _sources.Count; i++)
+        
+        foreach (var source in _sources)
         {
-            if (_sources[i].IsUsed)
+            if (source.IsUsed)
             {
                 continue;
             }
-
             //ToDo check if chain completed
             
             circuitsCount++;
             var circuitName = "DC" + circuitsCount;
-            var circuit = new Circuit();
-            
+            var entities = GetEntities(source);
+            var circuit = new Circuit(entities);
             
             var op = new OP(circuitName);
-
             op.ExportSimulationData += (sender, args) =>
             {
                 
             };
-            
-            op.Run(circuit);
-        }*/
+
+            try
+            {
+                op.Run(circuit);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("Something wrong with chain");
+            }
+        }
         
         ElementSettings.Instance.UpdateSettingsValues();
     }
 
+    private List<Entity> GetEntities(CircuitElement source)
+    {
+        // If this is the first voltage source we are adding, make sure one of 
+        // the ends is specified as ground, or "0" Volt point of reference.
+        var entities = new List<Entity>();
+
+        var allElements = "";
+        foreach (var element in _elements)
+        {
+            if (element.IsUsed){continue;}
+            
+            var connectedElement = element.GetElement();
+            if (connectedElement != null)
+            {
+                entities.Add(connectedElement);
+                allElements += element.ElementName + '\n';
+            }
+        }
+        Debug.Log(allElements);
+        return entities;
+    }
+    
     private void ClearValues()
     {
-        ElementsCount.Clear();
         foreach (var element in _elements)
         {
             element.ClearValues();

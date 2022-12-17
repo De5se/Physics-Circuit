@@ -26,7 +26,6 @@ namespace Elements
         [Space]
         [SerializeField] private bool isRoundPositionDisabled;
         [SerializeField] private bool isMotionDisabled;
-        [SerializeField] private bool isSettingsDisabled;
         
         private protected ElementMotionState MotionState;
         private const float StepHoldTime = 1f;
@@ -132,10 +131,7 @@ namespace Elements
             CameraMotion.Instance.EnableMotion(true);
             //ToDo vibration
             MotionState = ElementMotionState.Settings;
-            if (isSettingsDisabled == false)
-            {
-                WindowsController.Instance.OpenElementsSettings(this);
-            }
+            WindowsController.Instance.OpenElementsSettings(this);
         }
 
         private Vector2 GetRoundedPosition(Vector2 currentPosition)

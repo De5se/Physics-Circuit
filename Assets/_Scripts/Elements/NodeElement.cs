@@ -8,30 +8,38 @@ namespace _Scripts.Elements
 {
     public class NodeElement : ElementWithMotion
     {
-        [SerializeField, EnableIf(nameof(disabled))] private List<ElementWithMotion> _elementsFromThis = new();
-        private readonly List<ElementWithMotion> _elementsToThis = new();
+        [SerializeField, EnableIf(nameof(Disabled))] private List<ElementWithMotion> elementsFromThis = new();
+        [SerializeField, EnableIf(nameof(Disabled))] private List<ElementWithMotion> elementsToThis = new();
 
-        [SerializeField, EnableIf(nameof(disabled))] private List<LineRenderer> _lines = new();
-        private bool disabled => false;
+        [SerializeField, EnableIf(nameof(Disabled))] private List<LineRenderer> lines = new();
+        private bool Disabled => false;
+        [ShowNonSerializedField, Foldout("Info")]
         private string _outNode;
+        [ShowNonSerializedField, Foldout("Info")]
+        private string _infoNode;
+        
         public override string OutNode
         {
             get
             {
                 // if we had parallel connection of wires without elements we use the same node
-                if (_elementsToThis.Count > 0 && _elementsToThis[0].TryGetComponent(out NodeElement nodeElement))
+                if (elementsToThis.Count > 0 && elementsToThis[0].GetComponent<NodeElement>() != null)
                 {
-                    var outNode = nodeElement.OutNode;
-                    foreach (var element in _elementsToThis)
+                    var previousNode = elementsToThis[0].OutNode;
+                    var previousNodesTheSame = true;;
+                    foreach (var element in elementsToThis)
                     {
-                        if (element.OutNode != outNode)
-                        {
-                            return _outNode;
-                        }
+                        if (element.GetComponent<NodeElement>() == null){continue;}
+                        
+                        var elementOutNode = element.OutNode;
+                        previousNodesTheSame =  elementOutNode == previousNode && previousNodesTheSame;
                     }
-                    return outNode;
+                    if (previousNodesTheSame)
+                    {
+                        return _infoNode = previousNode;
+                    }
                 }
-                return _outNode;
+                return _infoNode = _outNode;;
             }
         }
 
@@ -44,32 +52,32 @@ namespace _Scripts.Elements
         private protected override void Update()
         {
             base.Update();
-            for (int i = 0; i < _elementsFromThis.Count; i++)
+            for (int i = 0; i < elementsFromThis.Count; i++)
             {
-                if (_lines.Count > i)
+                if (lines.Count > i)
                 {
-                    DrawLine(_lines[i], _elementsFromThis[i]);
+                    DrawLine(lines[i], elementsFromThis[i]);
                 }
             }
         }
 
         public override void AddElementsFromThis(ElementWithMotion elementWithMotion)
         {
-            if (_elementsFromThis.Contains(elementWithMotion))
+            if (elementsFromThis.Contains(elementWithMotion))
             {
-                for (var i = 0; i < _elementsFromThis.Count; i++)
+                for (var i = 0; i < elementsFromThis.Count; i++)
                 {
-                    if (_elementsFromThis[i] != elementWithMotion) continue;
+                    if (elementsFromThis[i] != elementWithMotion) continue;
                     
-                    _elementsFromThis.Remove(_elementsFromThis[i]);
-                    Destroy(_lines[i].gameObject);
-                    _lines.Remove(_lines[i]);
+                    elementsFromThis.Remove(elementsFromThis[i]);
+                    Destroy(lines[i].gameObject);
+                    lines.Remove(lines[i]);
                     return;
                 }
                 return;
             }
-            _lines.Add(Instantiate(wire, outputPoint));
-            _elementsFromThis.Add(elementWithMotion);
+            lines.Add(Instantiate(wire, outputPoint));
+            elementsFromThis.Add(elementWithMotion);
         }
 
         public override void AddElementsToThis(ElementWithMotion elementWithMotion)
@@ -79,7 +87,7 @@ namespace _Scripts.Elements
 
         private void OnDestroy()
         {
-            foreach (var elementToThis in _elementsToThis)
+            foreach (var elementToThis in elementsToThis)
             {
                 elementToThis.AddElementsFromThis(this);
             }

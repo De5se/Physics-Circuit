@@ -1,7 +1,5 @@
 ﻿using System;
 using Enums;
-using NaughtyAttributes;
-using UnityEngine;
 
 namespace Elements
 {

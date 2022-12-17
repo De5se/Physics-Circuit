@@ -1,6 +1,7 @@
 ﻿using System;
 using Elements;
 using Enums;
+using NaughtyAttributes;
 using SpiceSharp.Components;
 using SpiceSharp.Entities;
 using UnityEngine;
@@ -11,33 +12,49 @@ namespace _Scripts.Elements
     {
         [Space] [SerializeField] private ElementType elementType;
         [SerializeField] private int elementsValue;
+
+
+        [ShowNonSerializedField, Foldout("Info"), Label("In")]
+        private string _infoInNode;
+        [ShowNonSerializedField, Foldout("Info"), Label("Out")]
+        private string _infoOutNode;
         
         private string _elementName;
         private ElementWithMotion _elementFromThis;
         private ElementWithMotion _elementToThis;
-
         private LineRenderer _lineRenderer;
 
+        public bool IsUsed { private set; get; }
+        
         public ElementType ElementType => elementType;
-        private string InNode => _elementToThis != null ? _elementToThis.OutNode : null;
-        private string _outNode;
+        private string InNode
+        {
+            get
+            {
+                return _infoInNode = _elementToThis != null ? _elementToThis.OutNode : null;
+            }
+        }
+
+        private string _possibleOutNode;
         public override string OutNode
         {
             // if next element is element we create node between them
             // if next element is node element we use its node
             get
             {
-                _outNode = null;
-                if (_elementFromThis == null) return _outNode;
+                if (_elementFromThis == null)
+                {
+                    return _infoOutNode = null;
+                }
                 if (_elementFromThis.TryGetComponent(out NodeElement nodeElement))
                 {
-                    _outNode = nodeElement.OutNode;
+                    return _infoOutNode = nodeElement.OutNode;
                 }
-                else if (_elementFromThis.TryGetComponent(out CircuitElement circuitElement))
+                if (_elementFromThis.TryGetComponent(out CircuitElement circuitElement))
                 {
-                    _outNode = CircuitSimulator.CreateNode();
+                    return _infoOutNode = _possibleOutNode;
                 }
-                return _outNode;
+                return _infoOutNode = null;
             }
         }
         
@@ -45,7 +62,7 @@ namespace _Scripts.Elements
         private protected override void Start()
         {
             _elementName = CircuitSimulator.CreateElement(elementType.ToString());
-            _outNode = CircuitSimulator.CreateNode();
+            _possibleOutNode = CircuitSimulator.CreateNode();
 
             base.Start();
             CircuitSimulator.Instance.AddElement(this);
@@ -106,6 +123,8 @@ namespace _Scripts.Elements
                 return null;
             }
 
+            IsUsed = true;
+
             Entity element = elementType switch
             {
                 ElementType.VoltageSource => new VoltageSource(_elementName, InNode, OutNode, elementsValue),
@@ -120,6 +139,7 @@ namespace _Scripts.Elements
         public void ClearValues()
         {
             elementData.ClearValues();
+            IsUsed = false;
         }
         
         public void UpdateValues()
