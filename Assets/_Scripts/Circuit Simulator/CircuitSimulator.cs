@@ -80,35 +80,21 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
                 if (element.IsUsed)
                 {
                     element.ElementData.VoltageExport =
-                        new RealVoltageExport(op, isSource ? element.OutNode : element.InNode);
+                        new RealVoltageExport(op, element.OutNode);
                     element.ElementData.CurrentExport =
-                        new RealPropertyExport(op, "V" + element.ElementName, "i");
+                        new RealPropertyExport(op, element.ElementName, "i");
                 }
             }
             
             // Catch exported data
             op.ExportSimulationData += (sender, args) =>
             {
-                var input = args.GetVoltage(source.OutNode);
-                var output = args.GetVoltage(source.InNode);
                 
-                // Loop through the components and find the lowest voltage, so we can normalize the entire
-                // circuit to start at 0V.
-                double minVoltage = 0f;
-                foreach (var element in _elements)
-                {
-                    if (!element.IsUsed){continue;}
-                    
-                    if (element.ElementData.VoltageExport.Value < minVoltage)
-                        minVoltage = element.ElementData.VoltageExport.Value;
-                }
-
-                // Now loop through again and tell each component what its voltage and current values are
                 foreach (var element in _elements)
                 {
                     if (!element.IsUsed){continue;}
                     // Update the voltage value
-                    var voltage = element.ElementData.VoltageExport.Value - minVoltage;
+                    var voltage = element.ElementData.VoltageExport.Value;
                     element.ElementData.ChangeValue(ElementsValue.Voltage, voltage);
 
                     // Update the current value
@@ -122,9 +108,9 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
                 op.Run(circuit);
                 Debug.Log("Everything is god");
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                Debug.LogWarning("Something wrong with chain");
+                Debug.LogWarning("Something wrong with chain\n" + e);
             }
         }
         
@@ -141,7 +127,6 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
         if (connectedElement != null)
         {
             entities.Add(connectedElement);
-            entities.Add(source.GetVoltageSource());
         }
 
         // Each component has a 0 voltage source added next to it to act as an ammeter.
@@ -153,7 +138,6 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
             if (connectedElement != null)
             {
                 entities.Add(connectedElement);
-                entities.Add(element.GetVoltageSource());
             }
         }
         return entities;

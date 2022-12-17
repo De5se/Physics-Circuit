@@ -87,6 +87,16 @@ namespace _Scripts.Elements
             elementsFromThis.Add(elementWithMotion);
         }
 
+        public override void AddElementsToThis(ElementWithMotion elementWithMotion)
+        {
+            if (elementsToThis.Contains(elementWithMotion))
+            {
+                elementsToThis.Remove(elementWithMotion);
+                return;
+            }
+            elementsToThis.Add(elementWithMotion);
+            base.AddElementsToThis(elementWithMotion);
+        }
 
         private void OnDestroy()
         {

@@ -8,11 +8,11 @@ namespace Elements
 {
     public class ElementWithMotion : MonoBehaviour
     {
-        [SerializeField] private string elementName;
+        [SerializeField] private string displayingName;
 
         [SerializeField] private protected ElementData elementData;
 
-        public string ElementName => elementName;
+        public string DisplayingName => displayingName;
         public ElementData ElementData => elementData;
         
         #region Draw variables

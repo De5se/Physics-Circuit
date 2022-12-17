@@ -241,16 +241,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64942753d7ee4f918c037ea57229b359, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  elementName: Node
+  displayingName: "\u0423\u0437\u0435\u043B"
   wire: {fileID: 1587930621724668934, guid: c6f5e083b3c1a274e89a754c52b4125f, type: 3}
   selectionCircle: {fileID: 3718621017706335941}
   inputPoint: {fileID: 5344071208944810625}
   outputPoint: {fileID: 5821113915103083740}
-  isRoundPositionDisabled: 0
+  isRoundPositionDisabled: 1
   isMotionDisabled: 0
-  isSettingsDisabled: 1
-  _elementsFromThis: []
-  _lines: []
+  elementsFromThis: []
+  elementsToThis: []
+  lines: []
 --- !u!1 &5821113915103083743
 GameObject:
   m_ObjectHideFlags: 0

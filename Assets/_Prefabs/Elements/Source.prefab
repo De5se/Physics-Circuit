@@ -327,14 +327,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f38d0a9632543d8acf38c4bc81b6ddf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  elementName: "\u0418\u0441\u0442\u043E\u0447\u043D\u0438\u043A \u0442\u043E\u043A\u0430"
+  displayingName: "\u0418\u0441\u0442\u043E\u0447\u043D\u0438\u043A \u0442\u043E\u043A\u0430"
   wire: {fileID: 1587930621724668934, guid: c6f5e083b3c1a274e89a754c52b4125f, type: 3}
   selectionCircle: {fileID: 3014673704744853063}
   inputPoint: {fileID: 5792899801171044867}
   outputPoint: {fileID: 5369900018758741086}
-  isRoundPositionDisabled: 0
+  isRoundPositionDisabled: 1
   isMotionDisabled: 0
-  isSettingsDisabled: 0
   elementType: 0
   elementsValue: 5
 --- !u!1 &5821113915103083743

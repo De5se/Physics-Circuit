@@ -159,12 +159,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f38d0a9632543d8acf38c4bc81b6ddf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  elementName: "\u0420\u0435\u0437\u0438\u0441\u0442\u043E\u0440"
+  displayingName: "\u0420\u0435\u0437\u0438\u0441\u0442\u043E\u0440"
   wire: {fileID: 1587930621724668934, guid: c6f5e083b3c1a274e89a754c52b4125f, type: 3}
   selectionCircle: {fileID: 8188723988979191746}
   inputPoint: {fileID: 582925310785174406}
   outputPoint: {fileID: 1366775741549542875}
-  isRoundPositionDisabled: 0
+  isRoundPositionDisabled: 1
   isMotionDisabled: 0
   elementType: 1
   elementsValue: 5

@@ -9,8 +9,8 @@ namespace Elements
     [System.Serializable]
     public class ElementData
     {
-        public RealVoltageExport VoltageExport;
-        public RealPropertyExport CurrentExport;
+        public IExport<double> VoltageExport;
+        public IExport<double> CurrentExport;
 
         public double? Current { get; private set; }
         public double? Voltage { get; private set; }

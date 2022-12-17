@@ -19,7 +19,9 @@ namespace _Scripts.Elements
         private string _infoInNode;
         [ShowNonSerializedField, Foldout("Info"), Label("Out")]
         private string _infoOutNode;
-        
+
+        public string ElementName => _elementName;
+
         private ElementWithMotion _elementFromThis;
         private ElementWithMotion _elementToThis;
         private LineRenderer _lineRenderer;
