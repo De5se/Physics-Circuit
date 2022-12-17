@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
+using _Scripts.Elements;
 using _Scripts.UI;
 using Enums;
 using UnityEngine;
@@ -8,17 +8,25 @@ namespace Elements
 {
     public class ElementWithMotion : MonoBehaviour
     {
-        [SerializeField] private protected ElementData elementData;
-        [SerializeField] private bool isSourceElement;
-        [SerializeField] private protected bool isConnectionPoint;
+        [SerializeField] private string elementName;
 
+        [SerializeField] private protected ElementData elementData;
+
+        public string ElementName => elementName;
         public ElementData ElementData => elementData;
-        public bool IsSourceElement => isSourceElement;
+        
+        #region Draw variables
+        [Space] [SerializeField] private protected LineRenderer wire;
+        [SerializeField] private GameObject selectionCircle;
+        [SerializeField] private Transform inputPoint;
+        [SerializeField] private protected Transform outputPoint;
+        #endregion
         
         #region Motion variables
         [Space]
         [SerializeField] private bool isRoundPositionDisabled;
         [SerializeField] private bool isMotionDisabled;
+        [SerializeField] private bool isSettingsDisabled;
         
         private protected ElementMotionState MotionState;
         private const float StepHoldTime = 1f;
@@ -31,8 +39,12 @@ namespace Elements
         private bool IsMouseChangedPosition => _startTouchPosition == Input.mousePosition;
         #endregion
 
+        public virtual string OutNode => null;
+
+        
         private protected virtual void Start()
         {
+            EnableSelectionCircle(false);
             _waitForHoldStep = new WaitForSeconds(StepHoldTime);
             if (isRoundPositionDisabled)
             {
@@ -80,6 +92,15 @@ namespace Elements
             StopAllCoroutines();
             MotionState = ElementMotionState.Released;
         }
+        
+        private void OnMouseUpAsButton()
+        {
+            if (MotionState == ElementMotionState.Released)
+            {
+                ElementsCreator.Instance.CreateWire(this);
+            }
+        }
+        
         #endregion
         
         #region Element Motion
@@ -111,7 +132,10 @@ namespace Elements
             CameraMotion.Instance.EnableMotion(true);
             //ToDo vibration
             MotionState = ElementMotionState.Settings;
-            WindowsController.Instance.OpenElementsSettings(this);  
+            if (isSettingsDisabled == false)
+            {
+                WindowsController.Instance.OpenElementsSettings(this);
+            }
         }
 
         private Vector2 GetRoundedPosition(Vector2 currentPosition)
@@ -124,5 +148,23 @@ namespace Elements
             return (int) num + (int) num % 2;
         }
 
+
+        #region Draw Wires
+
+        public virtual void AddElementsFromThis(ElementWithMotion elementWithMotion){}
+
+        public virtual void AddElementsToThis(ElementWithMotion elementWithMotion){}
+        
+        private protected void DrawLine(LineRenderer line, ElementWithMotion elementFromThis)
+        {
+            line.SetPosition(0, outputPoint.position);
+            line.SetPosition(1, elementFromThis.inputPoint.position);
+        }
+        
+        public void EnableSelectionCircle(bool isEnabled)
+        {
+            selectionCircle.SetActive(isEnabled);
+        }
+        #endregion
     }
 }

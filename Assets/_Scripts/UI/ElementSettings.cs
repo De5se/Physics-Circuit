@@ -18,7 +18,7 @@ namespace _Scripts.UI
         public void OpenSettings(ElementWithMotion elementWithMotion)
         {
             _currentElement = elementWithMotion;
-            elementsNameText.text = _currentElement.ElementData.ElementName;
+            elementsNameText.text = _currentElement.ElementName;
 
             UpdateSettingsValues();
             // ToDo openAnimation

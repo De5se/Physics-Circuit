@@ -1,163 +1,126 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using Elements;
 using Enums;
+using SpiceSharp.Components;
+using SpiceSharp.Entities;
 using UnityEngine;
 
 namespace _Scripts.Elements
 {
     public class CircuitElement : ElementWithMotion
     {
-        [Space]
-        [SerializeField] private GameObject selectionCircle;
-        [SerializeField] private LineRenderer wire;
-        [SerializeField] private Transform inputPoint;
-        [SerializeField] private Transform outputPoint;
-
-        private readonly List<CircuitElement> _elementsFromThis = new();
-        private readonly List<CircuitElement> _elementsToThis = new();
+        [Space] [SerializeField] private ElementType elementType;
+        [SerializeField] private int elementsValue;
         
-        private readonly List<LineRenderer> _lines = new();
+        private string _elementName;
+        private ElementWithMotion _elementFromThis;
+        private ElementWithMotion _elementToThis;
 
-        private int _elementsConnectedOnInput;
+        private LineRenderer _lineRenderer;
 
-        public int ElementsConnectedOnInput => _elementsConnectedOnInput;
-
+        public ElementType ElementType => elementType;
+        private string InNode => _elementToThis != null ? _elementToThis.OutNode : null;
+        private string _outNode;
+        public override string OutNode
+        {
+            // if next element is element we create node between them
+            // if next element is node element we use its node
+            get
+            {
+                _outNode = null;
+                if (_elementFromThis == null) return _outNode;
+                if (_elementFromThis.TryGetComponent(out NodeElement nodeElement))
+                {
+                    _outNode = nodeElement.OutNode;
+                }
+                else if (_elementFromThis.TryGetComponent(out CircuitElement circuitElement))
+                {
+                    _outNode = CircuitSimulator.CreateNode();
+                }
+                return _outNode;
+            }
+        }
+        
+        
         private protected override void Start()
         {
+            _elementName = CircuitSimulator.CreateElement(elementType.ToString());
+            _outNode = CircuitSimulator.CreateNode();
+
             base.Start();
-            EnableSelectionCircle(false);
             CircuitSimulator.Instance.AddElement(this);
         }
 
         private protected override void Update()
         {
             base.Update();
-            DrawLine();
+            if (_elementFromThis)
+            {
+                DrawLine(_lineRenderer, _elementFromThis);
+            }
         }
 
         private void OnDestroy()
         {
             CircuitSimulator.Instance.RemoveElement(this);
-            foreach (var elementToThis in _elementsToThis)
-            {
-                elementToThis.AddElementsFromThis(this);
-            }
+            _elementToThis.AddElementsFromThis(this);
         }
         
         #region wire creation
-        public void AddElementsFromThis(CircuitElement circuitElement)
+        public override void AddElementsFromThis(ElementWithMotion circuitElement)
         {
-            if (_elementsFromThis.Contains(circuitElement))
+            if (_elementFromThis == circuitElement)
             {
-                for (var i = 0; i < _elementsFromThis.Count; i++)
-                {
-                    if (_elementsFromThis[i] != circuitElement) continue;
-                    
-                    _elementsFromThis.Remove(_elementsFromThis[i]);
-                    Destroy(_lines[i].gameObject);
-                    _lines.Remove(_lines[i]);
-                    return;
-                }
+                _elementFromThis = null;
+                Destroy(_lineRenderer);
                 return;
             }
-            _elementsFromThis.Add(circuitElement);
+            if (_elementFromThis == null)
+            {
+                _lineRenderer = Instantiate(wire, outputPoint);
+            }
+
+            _elementFromThis = circuitElement;
         }
 
-        public void AddElementsToThis(CircuitElement circuitElement)
+        public override void AddElementsToThis(ElementWithMotion circuitElement)
         {
-            if (_elementsToThis.Contains(circuitElement))
+            if (_elementToThis == circuitElement)
             {
-                _elementsFromThis.Remove(circuitElement);
+                _elementFromThis = null;
                 return;
             }
-            _elementsToThis.Add(circuitElement);
-        }
-
-        public void EnableSelectionCircle(bool isEnabled)
-        {
-            selectionCircle.SetActive(isEnabled);
-        }
-        
-        private void OnMouseUp()
-        {
-            if (MotionState == ElementMotionState.Released)
-            {
-                ElementsCreator.Instance.CreateWire(this);
-            }
-        }
-        
-        private void DrawLine()
-        {
-            for (var i = 0; i < _elementsFromThis.Count; i++)
-            {
-                if (_lines.Count < _elementsFromThis.Count)
-                {
-                    _lines.Add(Instantiate(wire, outputPoint));
-                }
-                _lines[i].SetPosition(0, outputPoint.position);
-                _lines[i].SetPosition(1, _elementsFromThis[i].inputPoint.position);
-            }
+            _elementToThis = circuitElement;
         }
         #endregion
         
-        #region Data update
+        public Entity GetElement()
+        {
+            if (OutNode == null || InNode == null)
+            {
+                return null;
+            }
 
+            Entity element = elementType switch
+            {
+                ElementType.VoltageSource => new VoltageSource(_elementName, InNode, OutNode, elementsValue),
+                ElementType.Resistor => new Resistor(_elementName, InNode, OutNode, elementsValue),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            return element;
+        }
+        
+        #region Data update
         public void ClearValues()
         {
             elementData.ClearValues();
-            _elementsConnectedOnInput = 0;
-        }
-        /// <summary>
-        /// Returns true if smth changed
-        /// </summary>
-        /// <param name="increaseInputCount"></param>
-        /// <returns></returns>
-        public bool UpdateValues(bool increaseInputCount = true)
-        {
-            if (_elementsConnectedOnInput > _elementsToThis.Count)
-            {
-                Debug.LogError("There's loop in circuit");
-                return false;
-            }
-            if (increaseInputCount)
-            {
-                _elementsConnectedOnInput++;
-            }
-            if (IsSourceElement && _elementsConnectedOnInput == 0)
-            {
-                return UpdateNextElements();
-            }
-            if (_elementsConnectedOnInput < _elementsToThis.Count || IsSourceElement)
-            {
-                return false;
-            }
-            return UpdateNextElements();
-        }
-
-        /// <summary>
-        /// Returns true if smth changed
-        /// </summary>
-        private bool UpdateNextElements()
-        {
-            var result = false;
-            if (_elementsFromThis.Count == 1)
-            {
-                _elementsFromThis[0].elementData.ChangeValue(ElementsValue.A, elementData.Current);
-                if (isConnectionPoint || _elementsFromThis[0].isConnectionPoint)
-                {
-                    _elementsFromThis[0].elementData.ChangeValue(ElementsValue.V, elementData.Voltage);
-                    _elementsFromThis[0].elementData.ChangeValue(ElementsValue.R, elementData.Resistance);
-                }
-                return _elementsFromThis[0].UpdateValues();
-            }
-            foreach (var nextElement in _elementsFromThis)
-            {
-                nextElement.elementData.ChangeValue(ElementsValue.V, elementData.Voltage);
-                result = result || nextElement.UpdateValues();
-            }
-            return result;
         }
         
+        public void UpdateValues()
+        {
+            
+        }
         #endregion
     }
 }

@@ -47,10 +47,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69fd650067f74b6897148160e163f795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  elementData:
-    elementName: "\u041A\u043E\u043D\u0434\u0435\u043D\u0441\u0430\u0442\u043E\u0440"
+  elementName: 
+  wire: {fileID: 0}
+  selectionCircle: {fileID: 0}
+  inputPoint: {fileID: 0}
+  outputPoint: {fileID: 0}
   isRoundPositionDisabled: 0
   isMotionDisabled: 0
+  isSettingsDisabled: 0
 --- !u!61 &5821113915036375484
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -8,17 +8,10 @@ namespace Elements
     [System.Serializable]
     public class ElementData
     {
-        [SerializeField] private string elementName;
-        [SerializeField] private ElementsValue constValue;
-        [SerializeField] private float value;
-
         private float? _current;
         private float? _voltage;
         private float? _resistance;
 
-        public ElementsValue ConstValue => constValue;
-        public string ElementName => elementName;
-        
         public float? Current => _current;
         public float? Voltage => _voltage;
         public float? Resistance => _resistance;
@@ -28,7 +21,6 @@ namespace Elements
             _current = null;
             _voltage = null;
             _resistance = null;
-            ChangeValue(ConstValue, value);
         }
         
         public void ChangeValue(ElementsValue valueToUpdate, float? targetValue)

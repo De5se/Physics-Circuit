@@ -7,14 +7,14 @@ namespace _Scripts.Elements
 {
     public class ElementsCreator : Singleton<ElementsCreator>
     {
-        private CircuitElement _previousCircuitElement;
+        private ElementWithMotion _previousCircuitElement;
         
         public void CreateElement(ElementWithMotion targetElement, Vector2 creationPosition)
         {
             Instantiate(targetElement, creationPosition, quaternion.identity, transform);
         }
 
-        public void CreateWire(CircuitElement circuitElement)
+        public void CreateWire(ElementWithMotion circuitElement)
         {
             if (_previousCircuitElement == null)
             {
