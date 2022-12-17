@@ -80,7 +80,7 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
                 if (element.IsUsed)
                 {
                     element.ElementData.VoltageExport =
-                        new RealVoltageExport(op, element.OutNode);
+                        new RealVoltageExport(op, isSource ? element.OutNode : element.InNode);
                     element.ElementData.CurrentExport =
                         new RealPropertyExport(op, element.ElementName, "i");
                 }

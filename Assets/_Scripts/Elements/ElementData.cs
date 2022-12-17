@@ -14,7 +14,7 @@ namespace Elements
 
         public double? Current { get; private set; }
         public double? Voltage { get; private set; }
-        public double? Resistance => (Current == null || Voltage == null) ? null : Current * Voltage;
+        public double? Resistance => (Current == null || Voltage == null) ? null : Voltage / Current;
 
         public void ClearValues()
         {
@@ -25,6 +25,8 @@ namespace Elements
         public void ChangeValue(ElementsValue valueToUpdate, double? targetValue)
         {
             if (targetValue == null){return;}
+
+            if (targetValue < 0) targetValue *= -1;
             
             switch (valueToUpdate)
             {

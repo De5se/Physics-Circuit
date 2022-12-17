@@ -19,10 +19,10 @@ namespace _Scripts.UI
         {
             _currentElement = elementWithMotion;
             elementsNameText.text = _currentElement.DisplayingName;
+            inputField.gameObject.SetActive(!elementWithMotion.DisableInputField);
 
             UpdateSettingsValues();
             // ToDo openAnimation
-            // ToDo set buttons listeners
         }
 
         public void UpdateSettingsValues()

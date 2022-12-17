@@ -9,10 +9,12 @@ namespace Elements
     public class ElementWithMotion : MonoBehaviour
     {
         [SerializeField] private string displayingName;
-
+        [SerializeField] private bool disableInputField;
         [SerializeField] private protected ElementData elementData;
 
         public string DisplayingName => displayingName;
+
+        public bool DisableInputField => disableInputField;
         public ElementData ElementData => elementData;
         
         #region Draw variables
