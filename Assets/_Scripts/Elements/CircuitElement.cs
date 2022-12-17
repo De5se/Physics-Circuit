@@ -87,8 +87,13 @@ namespace _Scripts.Elements
         {
             if (_elementToThis == circuitElement)
             {
-                _elementFromThis = null;
+                _elementToThis.AddElementsFromThis(this);
+                _elementToThis = null;
                 return;
+            }
+            if (_elementToThis != null)
+            {
+                _elementToThis.AddElementsFromThis(this);
             }
             _elementToThis = circuitElement;
         }

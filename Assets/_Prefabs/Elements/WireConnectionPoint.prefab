@@ -249,6 +249,7 @@ MonoBehaviour:
   isRoundPositionDisabled: 0
   isMotionDisabled: 0
   isSettingsDisabled: 1
+  _elementsFromThis: []
   _lines: []
 --- !u!1 &5821113915103083743
 GameObject:

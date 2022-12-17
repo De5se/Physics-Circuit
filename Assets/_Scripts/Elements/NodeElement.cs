@@ -8,10 +8,10 @@ namespace _Scripts.Elements
 {
     public class NodeElement : ElementWithMotion
     {
-        [SerializeField, DisableIf(nameof(disabled))] private List<ElementWithMotion> _elementsFromThis = new();
+        [SerializeField, EnableIf(nameof(disabled))] private List<ElementWithMotion> _elementsFromThis = new();
         private readonly List<ElementWithMotion> _elementsToThis = new();
 
-        [SerializeField, DisableIf(nameof(disabled))] private List<LineRenderer> _lines = new();
+        [SerializeField, EnableIf(nameof(disabled))] private List<LineRenderer> _lines = new();
         private bool disabled => false;
         private string _outNode;
         public override string OutNode
