@@ -1,63 +1,41 @@
 ﻿using System;
 using Enums;
+using NaughtyAttributes;
+using SpiceSharp.Simulations;
+using UnityEngine;
 
 namespace Elements
 {
     [System.Serializable]
     public class ElementData
     {
-        private float? _current;
-        private float? _voltage;
-        private float? _resistance;
+        public RealVoltageExport VoltageExport;
+        public RealPropertyExport CurrentExport;
 
-        public float? Current => _current;
-        public float? Voltage => _voltage;
-        public float? Resistance => _resistance;
+        public double? Current { get; private set; }
+        public double? Voltage { get; private set; }
+        public double? Resistance => (Current == null || Voltage == null) ? null : Current * Voltage;
 
         public void ClearValues()
         {
-            _current = null;
-            _voltage = null;
-            _resistance = null;
+            Current = null;
+            Voltage = null;
         }
         
-        public void ChangeValue(ElementsValue valueToUpdate, float? targetValue)
+        public void ChangeValue(ElementsValue valueToUpdate, double? targetValue)
         {
             if (targetValue == null){return;}
             
             switch (valueToUpdate)
             {
-                case ElementsValue.A:
-                    _current = targetValue;
+                case ElementsValue.Current:
+                    Current = targetValue;
                     break;
-                case ElementsValue.V:
-                    _voltage = targetValue;
+                case ElementsValue.Voltage:
+                    Voltage = targetValue;
                     break;
-                case ElementsValue.R:
-                    _resistance = targetValue;
-                    break;
-                case ElementsValue.Hide:
-                    return;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(valueToUpdate), valueToUpdate, null);
-            }
-            TryUpdateOtherVariables();
-        }
-
-        // I = U/R
-        private void TryUpdateOtherVariables()
-        {
-            if (_current != null)
-            {
-                _resistance ??= _voltage / _current;
-            }
-            else if (_resistance != null)
-            {
-                _current = _voltage / _resistance;
-            }
-            else
-            {
-                // ToDo count resistance
             }
         }
 

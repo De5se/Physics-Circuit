@@ -13,13 +13,13 @@ namespace _Scripts.Elements
         [Space] [SerializeField] private ElementType elementType;
         [SerializeField] private int elementsValue;
 
-
+        [ShowNonSerializedField, Foldout("Info"), Label("Out")]
+        private string _elementName;
         [ShowNonSerializedField, Foldout("Info"), Label("In")]
         private string _infoInNode;
         [ShowNonSerializedField, Foldout("Info"), Label("Out")]
         private string _infoOutNode;
         
-        private string _elementName;
         private ElementWithMotion _elementFromThis;
         private ElementWithMotion _elementToThis;
         private LineRenderer _lineRenderer;
@@ -27,10 +27,14 @@ namespace _Scripts.Elements
         public bool IsUsed { private set; get; }
         
         public ElementType ElementType => elementType;
-        private string InNode
+
+        public bool IsFirstSource { get; private set; }
+
+        public string InNode
         {
             get
             {
+                if (IsFirstSource) return _infoInNode = "0";
                 return _infoInNode = _elementToThis != null ? _elementToThis.OutNode : null;
             }
         }
@@ -52,6 +56,10 @@ namespace _Scripts.Elements
                 }
                 if (_elementFromThis.TryGetComponent(out CircuitElement circuitElement))
                 {
+                    if (circuitElement.IsFirstSource)
+                    {
+                        return _infoOutNode = "0";
+                    }
                     return _infoOutNode = _possibleOutNode;
                 }
                 return _infoOutNode = null;
@@ -116,13 +124,13 @@ namespace _Scripts.Elements
         }
         #endregion
         
-        public Entity GetElement()
+        public Entity GetElement(bool isFirstSource = false)
         {
+            IsFirstSource = isFirstSource && elementType == ElementType.VoltageSource;
             if (OutNode == null || InNode == null)
             {
                 return null;
             }
-
             IsUsed = true;
 
             Entity element = elementType switch
@@ -133,6 +141,17 @@ namespace _Scripts.Elements
             };
 
             return element;
+        }
+
+        /// a 0 voltage source added next to element to act as an ammeter.
+        public Entity GetVoltageSource()
+        {
+            if (OutNode == null || InNode == null)
+            {
+                return null;
+            }
+
+            return new VoltageSource("V" + _elementName, InNode, OutNode, 0f);
         }
         
         #region Data update

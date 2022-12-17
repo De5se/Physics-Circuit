@@ -2,9 +2,7 @@
 {
     public enum ElementsValue
     {
-        Hide,
-        A,
-        V,
-        R
+        Current,
+        Voltage
     }
 }

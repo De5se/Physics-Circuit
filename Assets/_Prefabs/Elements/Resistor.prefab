@@ -166,8 +166,7 @@ MonoBehaviour:
   outputPoint: {fileID: 1366775741549542875}
   isRoundPositionDisabled: 0
   isMotionDisabled: 0
-  isSettingsDisabled: 0
-  elementType: 0
+  elementType: 1
   elementsValue: 5
 --- !u!1 &5821113915103083743
 GameObject:

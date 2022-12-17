@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Elements;
 using NaughtyAttributes;
 using UnityEngine;
@@ -22,6 +21,14 @@ namespace _Scripts.Elements
         {
             get
             {
+                foreach (var elementFromThis in elementsFromThis)
+                {
+                    if (elementFromThis.TryGetComponent(out CircuitElement circuitElement) &&
+                        circuitElement.IsFirstSource)
+                    {
+                        return _infoNode = "0";
+                    }
+                }
                 // if we had parallel connection of wires without elements we use the same node
                 if (elementsToThis.Count > 0 && elementsToThis[0].GetComponent<NodeElement>() != null)
                 {
@@ -39,7 +46,7 @@ namespace _Scripts.Elements
                         return _infoNode = previousNode;
                     }
                 }
-                return _infoNode = _outNode;;
+                return _infoNode = _outNode;
             }
         }
 
@@ -80,10 +87,6 @@ namespace _Scripts.Elements
             elementsFromThis.Add(elementWithMotion);
         }
 
-        public override void AddElementsToThis(ElementWithMotion elementWithMotion)
-        {
-            base.AddElementsToThis(elementWithMotion);
-        }
 
         private void OnDestroy()
         {

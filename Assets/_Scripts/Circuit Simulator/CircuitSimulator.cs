@@ -56,7 +56,6 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
     public void UpdateCircuit()
     {
         ClearValues();
-
         var circuitsCount = 0;
         
         foreach (var source in _sources)
@@ -65,24 +64,65 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
             {
                 continue;
             }
-            //ToDo check if chain completed
             
             circuitsCount++;
             var circuitName = "DC" + circuitsCount;
             var entities = GetEntities(source);
             var circuit = new Circuit(entities);
             
+            // Create an Operating Point Analysis for the circuit
             var op = new OP(circuitName);
+            
+            // Create exports so we can access component properties
+            foreach (var element in _elements)
+            {
+                var isSource = element.ElementType == ElementType.VoltageSource;
+                if (element.IsUsed)
+                {
+                    element.ElementData.VoltageExport =
+                        new RealVoltageExport(op, isSource ? element.OutNode : element.InNode);
+                    element.ElementData.CurrentExport =
+                        new RealPropertyExport(op, "V" + element.ElementName, "i");
+                }
+            }
+            
+            // Catch exported data
             op.ExportSimulationData += (sender, args) =>
             {
+                var input = args.GetVoltage(source.OutNode);
+                var output = args.GetVoltage(source.InNode);
                 
-            };
+                // Loop through the components and find the lowest voltage, so we can normalize the entire
+                // circuit to start at 0V.
+                double minVoltage = 0f;
+                foreach (var element in _elements)
+                {
+                    if (!element.IsUsed){continue;}
+                    
+                    if (element.ElementData.VoltageExport.Value < minVoltage)
+                        minVoltage = element.ElementData.VoltageExport.Value;
+                }
 
+                // Now loop through again and tell each component what its voltage and current values are
+                foreach (var element in _elements)
+                {
+                    if (!element.IsUsed){continue;}
+                    // Update the voltage value
+                    var voltage = element.ElementData.VoltageExport.Value - minVoltage;
+                    element.ElementData.ChangeValue(ElementsValue.Voltage, voltage);
+
+                    // Update the current value
+                    var current = element.ElementData.CurrentExport.Value;
+                    element.ElementData.ChangeValue(ElementsValue.Current, current);
+                }
+            };
+            // Run the simulation
             try
             {
                 op.Run(circuit);
+                Debug.Log("Everything is god");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Debug.LogWarning("Something wrong with chain");
             }
@@ -97,22 +137,28 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
         // the ends is specified as ground, or "0" Volt point of reference.
         var entities = new List<Entity>();
 
-        var allElements = "";
+        var connectedElement = source.GetElement(true);
+        if (connectedElement != null)
+        {
+            entities.Add(connectedElement);
+            entities.Add(source.GetVoltageSource());
+        }
+
+        // Each component has a 0 voltage source added next to it to act as an ammeter.
         foreach (var element in _elements)
         {
             if (element.IsUsed){continue;}
             
-            var connectedElement = element.GetElement();
+            connectedElement = element.GetElement();
             if (connectedElement != null)
             {
                 entities.Add(connectedElement);
-                allElements += element.ElementName + '\n';
+                entities.Add(element.GetVoltageSource());
             }
         }
-        Debug.Log(allElements);
         return entities;
     }
-    
+
     private void ClearValues()
     {
         foreach (var element in _elements)
