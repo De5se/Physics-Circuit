@@ -9,6 +9,8 @@ namespace _Scripts.UI
 {
     public class ElementSettings : Singleton<ElementSettings>
     {
+        [SerializeField] private GameObject characteristics;
+        [Space]
         [SerializeField] private TextMeshProUGUI elementsNameText;
         [SerializeField] private TextMeshProUGUI elementsCharacteristicsText;
         [Space, SerializeField] private TMP_InputField inputField;
@@ -21,6 +23,7 @@ namespace _Scripts.UI
         {
             _currentElement = elementWithMotion;
             elementsNameText.text = _currentElement.DisplayingName;
+            characteristics.SetActive(!elementWithMotion.HideCharacteristics);
             UpdateInputField();
 
             UpdateSettingsValues();

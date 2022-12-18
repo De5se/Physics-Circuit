@@ -48,6 +48,10 @@ namespace Elements
         private bool IsMouseChangedPosition => _startTouchPosition == Input.mousePosition;
         #endregion
 
+        private protected bool _hideCharacteristics;
+
+        public bool HideCharacteristics => _hideCharacteristics;
+
         public virtual string OutNode => null;
 
         
@@ -169,6 +173,8 @@ namespace Elements
         
         public void EnableSelectionCircle(bool isEnabled)
         {
+            if (disableWires) return;
+            
             selectionCircle.SetActive(isEnabled);
         }
         #endregion
