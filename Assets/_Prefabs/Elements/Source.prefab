@@ -74,8 +74,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f38d0a9632543d8acf38c4bc81b6ddf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayingName: "\u0438\u0441\u0442\u043E\u0447\u043D\u0438\u043A \u0442\u043E\u043A\u0430"
+  displayingName: "\u0418\u0441\u0442\u043E\u0447\u043D\u0438\u043A \u0442\u043E\u043A\u0430"
   disableInputField: 0
+  inputInfoText: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 V"
+  disableWires: 0
   wire: {fileID: 1587930621724668934, guid: c6f5e083b3c1a274e89a754c52b4125f, type: 3}
   selectionCircle: {fileID: 2316165819120906128}
   inputPoint: {fileID: 1241892324058245254}
@@ -83,7 +85,6 @@ MonoBehaviour:
   isRoundPositionDisabled: 1
   isMotionDisabled: 0
   elementType: 0
-  inputInfoText: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 V"
   elementsValue: 5
 --- !u!1 &5821113915103083743
 GameObject:
