@@ -2,6 +2,7 @@
 using Enums;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace _Scripts.Elements
 {
@@ -11,6 +12,7 @@ namespace _Scripts.Elements
         
         public void CreateElement(ElementWithMotion targetElement, Vector2 creationPosition)
         {
+            if (EventSystem.current.IsPointerOverGameObject()) return;
             Instantiate(targetElement, creationPosition, quaternion.identity, transform);
         }
 

@@ -27,7 +27,6 @@ namespace _Scripts.UI
             UpdateInputField();
 
             UpdateSettingsValues();
-            // ToDo openAnimation
         }
 
         private void UpdateInputField()
