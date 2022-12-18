@@ -8,12 +8,6 @@ namespace _Scripts.Elements
     {
         [SerializeField] private TextMeshPro text;
 
-        private protected override void Start()
-        {
-            base.Start();
-            _hideCharacteristics = true;
-        }
-
         public override string UpdateValue(string value)
         {
             return text.text = value;

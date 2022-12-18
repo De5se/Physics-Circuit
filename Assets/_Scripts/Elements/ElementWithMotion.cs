@@ -14,6 +14,9 @@ namespace Elements
         [SerializeField, HideIf(nameof(disableInputField))]
         private string inputInfoText;
         
+        [SerializeField] private bool hideCharacteristics;
+        public bool HideCharacteristics => hideCharacteristics;
+        
         [SerializeField, HideInInspector] private protected ElementData elementData;
 
         public string DisplayingName => displayingName;
@@ -37,7 +40,7 @@ namespace Elements
         [SerializeField] private bool isRoundPositionDisabled;
         [SerializeField] private bool isMotionDisabled;
         
-        private protected ElementMotionState MotionState;
+        private ElementMotionState _motionState;
         private const float StepHoldTime = 1f;
         private WaitForSeconds _waitForHoldStep;
 
@@ -47,10 +50,6 @@ namespace Elements
         private Vector3 _startTouchPosition;
         private bool IsMouseChangedPosition => _startTouchPosition == Input.mousePosition;
         #endregion
-
-        private protected bool _hideCharacteristics;
-
-        public bool HideCharacteristics => _hideCharacteristics;
 
         public virtual string OutNode => null;
 
@@ -89,7 +88,7 @@ namespace Elements
             {
                 return;
             }
-            if (MotionState == ElementMotionState.Motion)
+            if (_motionState == ElementMotionState.Motion)
             {
                 _isMotion = true;
             }
@@ -99,16 +98,16 @@ namespace Elements
         
         private void OnMouseButtonUp()
         {
-            if (MotionState == ElementMotionState.Motion)
+            if (_motionState == ElementMotionState.Motion)
                 FinishMotion();
 
             StopAllCoroutines();
-            MotionState = ElementMotionState.Released;
+            _motionState = ElementMotionState.Released;
         }
         
         private void OnMouseUp()
         {
-            if (MotionState == ElementMotionState.Released)
+            if (_motionState == ElementMotionState.Released)
             {
                 ElementsCreator.Instance.CreateWire(this);
             }
@@ -138,13 +137,13 @@ namespace Elements
             //ToDo vibration
             if (isMotionDisabled == false)
             {
-                MotionState = ElementMotionState.Motion;
+                _motionState = ElementMotionState.Motion;
                 CameraMotion.Instance.EnableMotion(false);
             }
             yield return _waitForHoldStep;
             CameraMotion.Instance.EnableMotion(true);
             //ToDo vibration
-            MotionState = ElementMotionState.Settings;
+            _motionState = ElementMotionState.Settings;
             WindowsController.Instance.OpenElementsSettings(this);
         }
 

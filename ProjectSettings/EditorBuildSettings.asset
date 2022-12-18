@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Scenes/VseslavsScene 1.unity
+    path: Assets/_Scenes/Constructor.unity
     guid: 8b5e40f0a22521647a24566326ef83dd
   m_configObjects: {}
