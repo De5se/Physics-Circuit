@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Elements;
 using Enums;
 using NaughtyAttributes;
@@ -11,16 +12,17 @@ namespace _Scripts.Elements
     public class CircuitElement : ElementWithMotion
     {
         [Space] [SerializeField] private ElementType elementType;
-        [SerializeField] private int elementsValue;
+        [SerializeField] private float elementsValue;
 
-        [ShowNonSerializedField, Foldout("Info"), Label("Out")]
-        private string _elementName;
         [ShowNonSerializedField, Foldout("Info"), Label("In")]
         private string _infoInNode;
         [ShowNonSerializedField, Foldout("Info"), Label("Out")]
         private string _infoOutNode;
 
-        public string ElementName => _elementName;
+        [field: ShowNonSerializedField]
+        [field: Foldout("Info")]
+        [field: Label("Out")]
+        public string ElementName { get; private set; }
 
         private ElementWithMotion _elementFromThis;
         private ElementWithMotion _elementToThis;
@@ -71,7 +73,7 @@ namespace _Scripts.Elements
         
         private protected override void Start()
         {
-            _elementName = CircuitSimulator.CreateElement(elementType.ToString());
+            ElementName = CircuitSimulator.CreateElement(elementType.ToString());
             _possibleOutNode = CircuitSimulator.CreateNode();
 
             base.Start();
@@ -137,24 +139,14 @@ namespace _Scripts.Elements
 
             Entity element = elementType switch
             {
-                ElementType.VoltageSource => new VoltageSource(_elementName, InNode, OutNode, elementsValue),
-                ElementType.Resistor => new Resistor(_elementName, InNode, OutNode, elementsValue),
+                ElementType.VoltageSource => new VoltageSource(ElementName, InNode, OutNode, elementsValue),
+                ElementType.Resistor => new Resistor(ElementName, InNode, OutNode, elementsValue),
                 _ => throw new ArgumentOutOfRangeException()
             };
 
             return element;
         }
 
-        /// a 0 voltage source added next to element to act as an ammeter.
-        public Entity GetVoltageSource()
-        {
-            if (OutNode == null || InNode == null)
-            {
-                return null;
-            }
-
-            return new VoltageSource("V" + _elementName, InNode, OutNode, 0f);
-        }
         
         #region Data update
         public void ClearValues()
@@ -162,11 +154,34 @@ namespace _Scripts.Elements
             elementData.ClearValues();
             IsUsed = false;
         }
-        
-        public void UpdateValues()
+
+        public override string UpdateValue(string value)
         {
-            
+            try
+            {
+                if (value == "")
+                {
+                    elementsValue = 0;
+                }
+                else
+                {
+                    elementsValue = float.Parse(value);    
+                }
+
+                return value;
+            }
+            catch
+            {
+                return GetValue();
+            }
         }
+
+        public override string GetValue()
+        {
+            return elementsValue.ToString(CultureInfo.InvariantCulture);
+        }
+
+        
         #endregion
     }
 }

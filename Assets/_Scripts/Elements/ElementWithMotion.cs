@@ -2,6 +2,7 @@
 using _Scripts.Elements;
 using _Scripts.UI;
 using Enums;
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace Elements
@@ -10,7 +11,10 @@ namespace Elements
     {
         [SerializeField] private string displayingName;
         [SerializeField] private bool disableInputField;
-        [SerializeField] private protected ElementData elementData;
+        [SerializeField, HideIf(nameof(disableInputField))]
+        private string inputInfoText;
+        
+        [SerializeField, HideInInspector] private protected ElementData elementData;
 
         public string DisplayingName => displayingName;
 
@@ -18,10 +22,14 @@ namespace Elements
         public ElementData ElementData => elementData;
         
         #region Draw variables
-        [Space] [SerializeField] private protected LineRenderer wire;
-        [SerializeField] private GameObject selectionCircle;
-        [SerializeField] private Transform inputPoint;
-        [SerializeField] private protected Transform outputPoint;
+
+        [Space] [SerializeField] private bool disableWires;
+        [SerializeField, HideIf(nameof(disableWires))] private protected LineRenderer wire;
+        [SerializeField, HideIf(nameof(disableWires))] private GameObject selectionCircle;
+        [SerializeField, HideIf(nameof(disableWires))] private Transform inputPoint;
+        [SerializeField, HideIf(nameof(disableWires))] private protected Transform outputPoint;
+
+        public bool DisableWires => disableWires;
         #endregion
         
         #region Motion variables
@@ -163,6 +171,17 @@ namespace Elements
         {
             selectionCircle.SetActive(isEnabled);
         }
+        #endregion
+
+
+        #region Input Field
+        public virtual string GetValue() {return null;}
+        public virtual string UpdateValue(string value){return value;}
+        public string GetInputInfoText()
+        {
+            return inputInfoText;
+        }
+
         #endregion
     }
 }

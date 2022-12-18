@@ -83,6 +83,7 @@ MonoBehaviour:
   isRoundPositionDisabled: 1
   isMotionDisabled: 0
   elementType: 1
+  inputInfoText: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 R"
   elementsValue: 5
 --- !u!1 &5821113915103083743
 GameObject:

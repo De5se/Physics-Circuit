@@ -16,6 +16,10 @@ namespace _Scripts.Elements
 
         public void CreateWire(ElementWithMotion circuitElement)
         {
+            if (circuitElement.DisableWires)
+            {
+                return;
+            }
             if (_previousCircuitElement == null)
             {
                 _previousCircuitElement = circuitElement;
