@@ -2,6 +2,7 @@
 using _Scripts.Elements;
 using _Scripts.UI;
 using Enums;
+using MoreMountains.NiceVibrations;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -41,7 +42,7 @@ namespace Elements
         [SerializeField] private bool isMotionDisabled;
         
         private ElementMotionState _motionState;
-        private const float StepHoldTime = 1f;
+        private const float StepHoldTime = 0.7f;
         private WaitForSeconds _waitForHoldStep;
 
         private readonly Vector2 _offset = new(0, 1f);
@@ -133,16 +134,19 @@ namespace Elements
         
         private IEnumerator OnHold()
         {
+            MMVibrationManager.Haptic(HapticTypes.Selection);
             yield return _waitForHoldStep;
-            //ToDo vibration
+            MMVibrationManager.Haptic(HapticTypes.MediumImpact);
+            
             if (isMotionDisabled == false)
             {
                 _motionState = ElementMotionState.Motion;
                 CameraMotion.Instance.EnableMotion(false);
             }
             yield return _waitForHoldStep;
+            MMVibrationManager.Haptic(HapticTypes.HeavyImpact);
+            
             CameraMotion.Instance.EnableMotion(true);
-            //ToDo vibration
             _motionState = ElementMotionState.Settings;
             WindowsController.Instance.OpenElementsSettings(this);
         }

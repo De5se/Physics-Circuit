@@ -263,6 +263,7 @@ MonoBehaviour:
   displayingName: "\u0422\u0435\u043A\u0441\u0442"
   disableInputField: 0
   inputInfoText: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0442\u0435\u043A\u0441\u0442"
+  hideCharacteristics: 1
   disableWires: 1
   wire: {fileID: 0}
   selectionCircle: {fileID: 0}
