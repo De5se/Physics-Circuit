@@ -12,15 +12,10 @@ namespace _Scripts.Elements.Components
         private ICircuitComponent _inputComponent;
         private ICircuitComponent _outputComponent;
         private LosslessTransmissionLine _entity;
-        public override Entity EntityComponent
-        {
-            get
-            {
-                UpdateInfoNodes();
-                return _entity;
-            }
-        }
-        
+
+        private protected override Entity EntityComponent =>
+            new LosslessTransmissionLine(ElementName, GetInNode(), GetOutNode(), GetOutNode(), GetInNode());
+
         public override string GetInNode() => _inputComponent.GetOutNode();
         public override string GetOutNode() => _outputComponent.GetInNode();
         
@@ -34,12 +29,6 @@ namespace _Scripts.Elements.Components
             
             _inputComponent.DestroyAction += Destroy;
             _outputComponent.DestroyAction += Destroy;
-        }
-
-        private protected override void Start()
-        {
-            base.Start();
-            _entity = new LosslessTransmissionLine(ElementName, GetInNode(), GetOutNode(), GetOutNode(), GetInNode());
         }
 
         public override void Destroy()

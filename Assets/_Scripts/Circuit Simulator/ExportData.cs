@@ -17,7 +17,7 @@ namespace _Scripts.Circuit_Simulator
 
         public override string ToString()
         {
-            return _elementsValue.ToString() + ' ' + _export.Value.ToString(CultureInfo.InvariantCulture);
+            return _elementsValue + " = " + _export.Value.ToString(CultureInfo.InvariantCulture) + "\n";
         }
     }
 }

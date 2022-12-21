@@ -12,7 +12,5 @@ namespace _Scripts.Elements
         
         public string GetInNode();
         public string GetOutNode();
-
-        public void Destroy();
     }
 }

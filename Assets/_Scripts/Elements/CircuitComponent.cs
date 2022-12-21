@@ -27,19 +27,29 @@ namespace _Scripts.Elements
         [ShowNonSerializedField, Foldout("Info"), Label("Out")]
         private string _infoOutNode;
 
-        private protected void UpdateInfoNodes()
+        private void UpdateInfoNodes()
         {
             _infoInNode = GetInNode();
             _infoOutNode = GetOutNode();
         }
-        
         #endif
         #endregion
         
         private protected string ElementName { private set; get;}
         private readonly ElementData _elementData = new();
-        public virtual Entity EntityComponent => null;
-        
+        private protected virtual Entity EntityComponent => null;
+
+        public Entity Entity
+        {
+            get
+            {
+                #if UNITY_EDITOR
+                UpdateInfoNodes();
+                #endif
+                return EntityComponent;
+            }
+        }
+
         #region ICircuitComponent mothods
         public Action DestroyAction { get; set; }
         public virtual Transform GetInputPoint() => inputPoint;
@@ -57,7 +67,7 @@ namespace _Scripts.Elements
         }
         #endregion
         
-        private protected List<ExportData> Expotrs = new();
+        private protected readonly List<ExportData> Exports = new();
 
         private protected override void Start()
         {
@@ -76,12 +86,12 @@ namespace _Scripts.Elements
 
         public virtual void UpdateExports(OP op)
         {
-            Expotrs.Clear();
+            Exports.Clear();
         }
 
         public void CatchExportedData()
         {
-            var values = Expotrs.Aggregate("", (current, export) => current + export.ToString());
+            var values = Exports.Aggregate("", (current, export) => current + export.ToString());
             _elementData.ChangeValues(values);
         }
         #endregion

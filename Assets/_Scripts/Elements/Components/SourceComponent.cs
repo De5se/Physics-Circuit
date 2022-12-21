@@ -11,14 +11,8 @@ namespace _Scripts.Elements.Components
     {
         [ShowNonSerializedField] private bool _isFirstSource;
 
-        public override Entity EntityComponent
-        {
-            get
-            {
-                UpdateInfoNodes();
-                return new VoltageSource(ElementName, GetInNode(), GetOutNode(), elementsValue);
-            }
-        }
+        private protected override Entity EntityComponent =>
+            new VoltageSource(ElementName, GetInNode(), GetOutNode(), elementsValue);
 
         // If this is the first voltage source we are adding, make sure one of 
         // the ends is specified as ground, or "0" Volt point of reference.
@@ -38,9 +32,9 @@ namespace _Scripts.Elements.Components
         public override void UpdateExports(OP op)
         {
             base.UpdateExports(op);
-            Expotrs.Add(item: new ExportData(ElementsValue.V,
+            Exports.Add(item: new ExportData(ElementsValue.V,
                 new RealVoltageExport(op, GetOutNode(), GetOutNode())));
-            Expotrs.Add(item: new ExportData(ElementsValue.A,
+            Exports.Add(item: new ExportData(ElementsValue.A,
                 new RealPropertyExport(op, ElementName, "i")));
         }
     }

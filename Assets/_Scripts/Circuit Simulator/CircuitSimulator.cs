@@ -39,17 +39,17 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
     public void AddElement(CircuitComponent element)
     {
         _components.Add(element);
-        UpdateCircuit();
+        Simulate();
     }
 
     public void RemoveElement(CircuitComponent element)
     {
         _components.Remove(element);
-        UpdateCircuit();
+        Simulate();
     }
     #endregion
 
-    private void UpdateCircuit()
+    private void Simulate()
     {
         StartCoroutine(Simulation());
     }
@@ -108,7 +108,7 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
                 sourcesCount++;
                 source.SetAsFirstSource();
             }
-            entities.Add(element.EntityComponent);
+            entities.Add(element.Entity);
         }
         return entities;
     }
