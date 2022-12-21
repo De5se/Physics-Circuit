@@ -2,8 +2,11 @@
 {
     public enum ElementType
     {
-        VoltageSource,
+        Source,
         Resistor,
+        Ammeter,
+        Voltmeter,
+        Capacitor,
         Wire
     }
 }

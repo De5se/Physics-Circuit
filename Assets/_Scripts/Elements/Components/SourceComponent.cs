@@ -4,15 +4,18 @@ using NaughtyAttributes;
 using SpiceSharp.Components;
 using SpiceSharp.Entities;
 using SpiceSharp.Simulations;
+using UnityEngine;
 
 namespace _Scripts.Elements.Components
 {
     public class SourceComponent : CircuitComponent
     {
         [ShowNonSerializedField] private bool _isFirstSource;
+        [SerializeField] private bool isVoltageSource;
 
-        private protected override Entity EntityComponent =>
-            new VoltageSource(ElementName, GetInNode(), GetOutNode(), elementsValue);
+        private protected override Entity EntityComponent => isVoltageSource
+            ? new VoltageSource(ElementName, GetInNode(), GetOutNode(), elementsValue)
+            : new CurrentSource(ElementName, GetInNode(), GetOutNode(), elementsValue);
 
         // If this is the first voltage source we are adding, make sure one of 
         // the ends is specified as ground, or "0" Volt point of reference.
