@@ -1,7 +1,5 @@
-﻿
-using System;
+﻿using System;
 using _Scripts.Elements;
-using Elements;
 using TMPro;
 using UnityEngine;
 
@@ -17,16 +15,29 @@ namespace _Scripts.UI
         [SerializeField] private TextMeshProUGUI inputInfoText;
         
         private ElementWithMotion _currentElement;
+        private ElementData _currentElementData;
+        
         private const float RotateAngle = 90f;
         
         public void OpenSettings(ElementWithMotion elementWithMotion)
         {
             _currentElement = elementWithMotion;
             elementsNameText.text = _currentElement.DisplayingName;
-            characteristics.SetActive(!elementWithMotion.HideCharacteristics);
             UpdateInputField();
+        }
 
-            UpdateSettingsValues();
+        public void CloseSettings()
+        {
+            WindowsController.Instance.CloseElementsSettings();
+            characteristics.SetActive(false);
+            _currentElement = null;
+            _currentElementData = null;
+        }
+
+        private void Start()
+        {
+            inputField.onValueChanged.RemoveAllListeners();
+            inputField.onValueChanged.AddListener(GetInput);
         }
 
         private void UpdateInputField()
@@ -34,16 +45,10 @@ namespace _Scripts.UI
             inputField.gameObject.SetActive(!_currentElement.DisableInputField);
             if (_currentElement.DisableInputField) return;
 
-            inputField.text = _currentElement.GetValue();
+            inputField.text = _currentElement.GetInputFieldValue();
             inputInfoText.text = _currentElement.GetInputInfoText();
         }
         
-        private void Start()
-        {
-            inputField.onValueChanged.RemoveAllListeners();
-            inputField.onValueChanged.AddListener(GetInput);
-        }
-
         private void GetInput(string arg0)
         {
             if (!_currentElement.TryGetComponent(out ElementWithMotion motionElement))
@@ -51,22 +56,23 @@ namespace _Scripts.UI
                 return;
             }
 
-            inputField.text = motionElement.UpdateValue(inputField.text);
+            inputField.text = motionElement.UpdateInputFieldText(inputField.text);
         }
         
-
-        public void UpdateSettingsValues()
+        public void OpenElementsCharacteristics(ElementData elementData)
         {
-            if (_currentElement == null) return;
-            elementsCharacteristicsText.text = _currentElement.ElementData.ToString();
+            characteristics.SetActive(true);
+            _currentElementData = elementData;
+            UpdateCharacteristicsValues();
         }
         
-        public void CloseSettings()
+        public void UpdateCharacteristicsValues()
         {
-            WindowsController.Instance.CloseElementsSettings();
-            _currentElement = null;
+            if (_currentElementData == null) return;
+            elementsCharacteristicsText.text = _currentElementData.ToString();
         }
 
+        #region actions with element
         public void RotateElement()
         {
             _currentElement.transform.Rotate(Vector3.back, RotateAngle);
@@ -82,5 +88,7 @@ namespace _Scripts.UI
             Destroy(_currentElement.gameObject);
             CloseSettings();
         }
+        #endregion
+        
     }
 }

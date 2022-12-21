@@ -1,9 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using _Scripts.Elements;
+using _Scripts.Elements.Components;
 using _Scripts.UI;
-using Elements;
-using Enums;
 using SpiceSharp;
 using SpiceSharp.Components;
 using SpiceSharp.Entities;
@@ -12,12 +12,9 @@ using UnityEngine;
 
 public class CircuitSimulator : Singleton<CircuitSimulator>
 {
-    private readonly List<CircuitElement> _elements = new();
-    private readonly List<CircuitElement> _sources = new();
+    private readonly List<CircuitComponent> _components = new();
 
-    private static readonly Dictionary<string, int> ElementsCount = new();
-    private const string NodeName = "Node";
-    
+    #region Init
     private void Start()
     {
         PreloadSimulator();
@@ -25,7 +22,6 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
 
     /// <summary>
     /// Build a simple circuit and run an analysis to preload the SpiceSharp simulator. 
-    /// This avoids a multi-second lag when connecting our first circuit on the breadboard.
     /// </summary>
     private void PreloadSimulator()
     {
@@ -37,104 +33,82 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
         var dc = new OP("DC 1");
         dc.Run(ckt);
     }
+    #endregion
     
-    public void AddElement(CircuitElement element)
+    #region Editing Circuit
+    public void AddElement(CircuitComponent element)
     {
-        if (element.ElementType == ElementType.VoltageSource)
-        {
-            _sources.Add(element);
-        }
-        _elements.Add(element);
-    }
-
-    public void RemoveElement(CircuitElement element)
-    {
-        _elements.Remove(element);
+        _components.Add(element);
         UpdateCircuit();
     }
 
-    public void UpdateCircuit()
+    public void RemoveElement(CircuitComponent element)
     {
-        ClearValues();
-        var circuitsCount = 0;
-        
-        foreach (var source in _sources)
-        {
-            if (source.IsUsed)
-            {
-                continue;
-            }
-            
-            circuitsCount++;
-            var circuitName = "DC" + circuitsCount;
-            var entities = GetEntities(source);
-            var circuit = new Circuit(entities);
-            
-            // Create an Operating Point Analysis for the circuit
-            var op = new OP(circuitName);
-            
-            // Create exports so we can access component properties
-            foreach (var element in _elements)
-            {
-                var isSource = element.ElementType == ElementType.VoltageSource;
-                if (element.IsUsed)
-                {
-                    element.ElementData.VoltageExport =
-                        new RealVoltageExport(op, isSource ? element.OutNode : element.InNode);
-                    element.ElementData.CurrentExport =
-                        new RealPropertyExport(op, element.ElementName, "i");
-                }
-            }
-            
-            // Catch exported data
-            op.ExportSimulationData += (sender, args) =>
-            {
-                
-                foreach (var element in _elements)
-                {
-                    if (!element.IsUsed){continue;}
-                    // Update the voltage value
-                    var voltage = element.ElementData.VoltageExport.Value;
-                    element.ElementData.ChangeValue(ElementsValue.Voltage, voltage);
+        _components.Remove(element);
+        UpdateCircuit();
+    }
+    #endregion
 
-                    // Update the current value
-                    var current = element.ElementData.CurrentExport.Value;
-                    element.ElementData.ChangeValue(ElementsValue.Current, current);
-                }
-            };
-            // Run the simulation
-            try
-            {
-                op.Run(circuit);
-                Debug.Log("Everything is god");
-            }
-            catch (Exception e)
-            {
-                Debug.LogWarning("Something wrong with chain\n" + e);
-            }
-        }
-        
-        ElementSettings.Instance.UpdateSettingsValues();
+    private void UpdateCircuit()
+    {
+        StartCoroutine(Simulation());
     }
 
-    private List<Entity> GetEntities(CircuitElement source)
+    private IEnumerator Simulation()
+    {
+        ClearValues();
+        // wait for frame to update components
+        yield return new WaitForFixedUpdate();
+        
+        var circuit = new Circuit(GetEntities());
+        
+        // Create an Operating Point Analysis for the circuit
+        var op = new OP("DC 1");
+        
+        // Create exports so we can access component properties
+        foreach (var element in _components)
+        {
+            element.UpdateExports(op);
+        }
+        
+        // Catch exported data
+        op.ExportSimulationData += (sender, args) =>
+        {
+            foreach (var element in _components)
+            {
+                element.CatchExportedData();
+            }
+        };
+        
+        // Run the simulation
+        try
+        {
+            op.Run(circuit);
+            Debug.Log("Everything is god");
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("Something wrong with chain\n" + e);
+        }
+
+        // Update current settings window data
+        ElementSettings.Instance.UpdateCharacteristicsValues();
+    }
+    
+    private IEnumerable<Entity> GetEntities()
     {
         // If this is the first voltage source we are adding, make sure one of 
         // the ends is specified as ground, or "0" Volt point of reference.
+        var sourcesCount = 0;
         var entities = new List<Entity>();
-
-        var connectedElement = source.GetElement(true);
-        if (connectedElement != null)
+        foreach (var element in _components)
         {
-            entities.Add(connectedElement);
-        }
-
-        // Each component has a 0 voltage source added next to it to act as an ammeter.
-        foreach (var element in _elements)
-        {
-            if (element.IsUsed){continue;}
-            
-            connectedElement = element.GetElement();
+            var connectedElement = element.EntityComponent;
+            if (sourcesCount == 0 && element.TryGetComponent(out SourceComponent source))
+            {
+                sourcesCount++;
+                source.SetAsFirstSource();
+            }
             if (connectedElement != null)
             {
                 entities.Add(connectedElement);
@@ -145,24 +119,9 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
 
     private void ClearValues()
     {
-        foreach (var element in _elements)
+        foreach (var element in _components)
         {
             element.ClearValues();
         }
-    }
-    
-    public static string CreateElement(string elementName)
-    {
-        if (!ElementsCount.ContainsKey(elementName))
-        {
-            ElementsCount.Add(elementName, 0);
-        }
-        ElementsCount[elementName]++;
-        return elementName + ElementsCount[elementName].ToString();
-    }
-
-    public static string CreateNode()
-    {
-        return CreateElement(NodeName);
     }
 }

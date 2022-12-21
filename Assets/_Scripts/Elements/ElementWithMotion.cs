@@ -1,12 +1,11 @@
 ﻿using System.Collections;
-using _Scripts.Elements;
 using _Scripts.UI;
 using Enums;
 using MoreMountains.NiceVibrations;
 using NaughtyAttributes;
 using UnityEngine;
 
-namespace Elements
+namespace _Scripts.Elements
 {
     public class ElementWithMotion : MonoBehaviour
     {
@@ -14,34 +13,15 @@ namespace Elements
         [SerializeField] private bool disableInputField;
         [SerializeField, HideIf(nameof(disableInputField))]
         private string inputInfoText;
-        
-        [SerializeField] private bool hideCharacteristics;
-        public bool HideCharacteristics => hideCharacteristics;
-        
-        [SerializeField, HideInInspector] private protected ElementData elementData;
-
         public string DisplayingName => displayingName;
-
         public bool DisableInputField => disableInputField;
-        public ElementData ElementData => elementData;
-        
-        #region Draw variables
 
-        [Space] [SerializeField] private bool disableWires;
-        [SerializeField, HideIf(nameof(disableWires))] private protected LineRenderer wire;
-        [SerializeField, HideIf(nameof(disableWires))] private GameObject selectionCircle;
-        [SerializeField, HideIf(nameof(disableWires))] private Transform inputPoint;
-        [SerializeField, HideIf(nameof(disableWires))] private protected Transform outputPoint;
-
-        public bool DisableWires => disableWires;
-        #endregion
-        
         #region Motion variables
         [Space]
         [SerializeField] private bool isRoundPositionDisabled;
         [SerializeField] private bool isMotionDisabled;
         
-        private ElementMotionState _motionState;
+        private protected ElementMotionState MotionState;
         private const float StepHoldTime = 0.7f;
         private WaitForSeconds _waitForHoldStep;
 
@@ -49,20 +29,12 @@ namespace Elements
         private bool _isMotion;
 
         private Vector3 _startTouchPosition;
-        private bool IsMouseChangedPosition => _startTouchPosition == Input.mousePosition;
+        private protected bool IsMouseChangedPosition => _startTouchPosition != Input.mousePosition;
         #endregion
 
-        public virtual string OutNode => null;
-
-        
         private protected virtual void Start()
         {
-            EnableSelectionCircle(false);
             _waitForHoldStep = new WaitForSeconds(StepHoldTime);
-            if (isRoundPositionDisabled)
-            {
-                transform.position = GetRoundedPosition(transform.position);
-            }
         }
         private protected virtual void Update()
         {
@@ -85,39 +57,31 @@ namespace Elements
 
         private void OnMouseDrag()
         {
-            if (IsMouseChangedPosition)
+            if (!IsMouseChangedPosition)
             {
                 return;
             }
-            if (_motionState == ElementMotionState.Motion)
+            if (MotionState == ElementMotionState.Motion)
             {
                 _isMotion = true;
             }
             
+            // stop coroutine to not open settings window
             StopAllCoroutines();
         }
         
         private void OnMouseButtonUp()
         {
-            if (_motionState == ElementMotionState.Motion)
+            if (MotionState == ElementMotionState.Motion)
                 FinishMotion();
 
             StopAllCoroutines();
-            _motionState = ElementMotionState.Released;
+            MotionState = ElementMotionState.Released;
         }
-        
-        private void OnMouseUp()
-        {
-            if (_motionState == ElementMotionState.Released)
-            {
-                ElementsCreator.Instance.CreateWire(this);
-            }
-        }
-        
         #endregion
         
         #region Element Motion
-        private protected virtual void MoveElement()
+        private void MoveElement()
         {
             var targetPosition = (Vector2) Camera.main!.ScreenToWorldPoint(Input.mousePosition) + _offset;
             transform.position = targetPosition;
@@ -126,34 +90,52 @@ namespace Elements
         {
             _isMotion = false;
             CameraMotion.Instance.EnableMotion(true);
-            // Round position to even
+            
             var targetPosition = (Vector2) Camera.main!.ScreenToWorldPoint(Input.mousePosition) + _offset;
-            transform.position = GetRoundedPosition(targetPosition);
+            if (isRoundPositionDisabled)
+            {
+                targetPosition = GetRoundedPosition(targetPosition);
+            }
+            transform.position = targetPosition;
         }
         #endregion
-        
+
+        #region Tap steps
         private IEnumerator OnHold()
         {
-            MMVibrationManager.Haptic(HapticTypes.Selection);
+            FirstStepTap();
             yield return _waitForHoldStep;
-            MMVibrationManager.Haptic(HapticTypes.MediumImpact);
-            
-            if (isMotionDisabled == false)
-            {
-                _motionState = ElementMotionState.Motion;
-                CameraMotion.Instance.EnableMotion(false);
-            }
+            SecondStepTap();
             yield return _waitForHoldStep;
-            MMVibrationManager.Haptic(HapticTypes.HeavyImpact);
-            
-            CameraMotion.Instance.EnableMotion(true);
-            _motionState = ElementMotionState.Settings;
-            WindowsController.Instance.OpenElementsSettings(this);
+            ThirdStepTap();
         }
 
-        private Vector2 GetRoundedPosition(Vector2 currentPosition)
+        private void FirstStepTap()
         {
-            return isRoundPositionDisabled ? currentPosition : new Vector2(RoundToEven(currentPosition.x), RoundToEven(currentPosition.y));
+            MMVibrationManager.Haptic(HapticTypes.Selection);
+        }
+        private void SecondStepTap()
+        {
+            MMVibrationManager.Haptic(HapticTypes.MediumImpact);
+            
+            if (isMotionDisabled) return;
+            
+            MotionState = ElementMotionState.Motion;
+            CameraMotion.Instance.EnableMotion(false);
+        }
+        private protected virtual void ThirdStepTap()
+        {
+            MotionState = ElementMotionState.Settings;
+            
+            MMVibrationManager.Haptic(HapticTypes.HeavyImpact);
+            CameraMotion.Instance.EnableMotion(true);
+            WindowsController.Instance.OpenElementsSettings(this);
+        }
+        #endregion
+
+        private static Vector2 GetRoundedPosition(Vector2 currentPosition)
+        {
+            return new Vector2(RoundToEven(currentPosition.x), RoundToEven(currentPosition.y));
         }
 
         private static float RoundToEven(float num)
@@ -161,36 +143,13 @@ namespace Elements
             return (int) num + (int) num % 2;
         }
 
-
-        #region Draw Wires
-
-        public virtual void AddElementsFromThis(ElementWithMotion elementWithMotion){}
-
-        public virtual void AddElementsToThis(ElementWithMotion elementWithMotion){}
-        
-        private protected void DrawLine(LineRenderer line, ElementWithMotion elementFromThis)
-        {
-            line.SetPosition(0, outputPoint.position);
-            line.SetPosition(1, elementFromThis.inputPoint.position);
-        }
-        
-        public void EnableSelectionCircle(bool isEnabled)
-        {
-            if (disableWires) return;
-            
-            selectionCircle.SetActive(isEnabled);
-        }
-        #endregion
-
-
         #region Input Field
-        public virtual string GetValue() {return null;}
-        public virtual string UpdateValue(string value){return value;}
+        public virtual string GetInputFieldValue() {return null;}
+        public virtual string UpdateInputFieldText(string value){return value;}
         public string GetInputInfoText()
         {
             return inputInfoText;
         }
-
         #endregion
     }
 }

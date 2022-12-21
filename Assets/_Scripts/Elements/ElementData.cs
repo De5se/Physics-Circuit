@@ -1,12 +1,10 @@
 ﻿using System;
 using Enums;
-using NaughtyAttributes;
 using SpiceSharp.Simulations;
-using UnityEngine;
 
-namespace Elements
+namespace _Scripts.Elements
 {
-    [System.Serializable]
+    [Serializable]
     public class ElementData
     {
         public IExport<double> VoltageExport;

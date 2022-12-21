@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5786910427858776890}
   - component: {fileID: 1587930621724668934}
+  - component: {fileID: 8453056016030832226}
   m_Layer: 0
   m_Name: Wire
   m_TagString: Untagged
@@ -131,3 +132,24 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!114 &8453056016030832226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3818677712571308616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299cd26107244448add587d5e693cb62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  displayingName: "\u041F\u0440\u043E\u0432\u043E\u0434"
+  disableInputField: 1
+  inputInfoText: 
+  isRoundPositionDisabled: 0
+  isMotionDisabled: 1
+  elementType: 2
+  inputPoint: {fileID: 0}
+  outputPoint: {fileID: 0}
+  elementsValue: 0
