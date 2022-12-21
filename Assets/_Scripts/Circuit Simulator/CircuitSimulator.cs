@@ -49,7 +49,7 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
     }
     #endregion
 
-    private void Simulate()
+    public void Simulate()
     {
         StartCoroutine(Simulation());
     }

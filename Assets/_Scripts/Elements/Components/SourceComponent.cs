@@ -33,7 +33,7 @@ namespace _Scripts.Elements.Components
         {
             base.UpdateExports(op);
             Exports.Add(item: new ExportData(ElementsValue.V,
-                new RealVoltageExport(op, GetOutNode(), GetOutNode())));
+                new RealPropertyExport(op, ElementName, "v")));
             Exports.Add(item: new ExportData(ElementsValue.A,
                 new RealPropertyExport(op, ElementName, "i")));
         }

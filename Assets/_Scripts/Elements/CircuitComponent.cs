@@ -120,6 +120,7 @@ namespace _Scripts.Elements
             try
             {
                 elementsValue = value == "" ? 0 : float.Parse(value);
+                CircuitSimulator.Instance.Simulate();
                 return value;
             }
             catch
