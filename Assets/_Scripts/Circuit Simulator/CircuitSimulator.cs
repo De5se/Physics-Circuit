@@ -103,16 +103,12 @@ public class CircuitSimulator : Singleton<CircuitSimulator>
         var entities = new List<Entity>();
         foreach (var element in _components)
         {
-            var connectedElement = element.EntityComponent;
             if (sourcesCount == 0 && element.TryGetComponent(out SourceComponent source))
             {
                 sourcesCount++;
                 source.SetAsFirstSource();
             }
-            if (connectedElement != null)
-            {
-                entities.Add(connectedElement);
-            }
+            entities.Add(element.EntityComponent);
         }
         return entities;
     }

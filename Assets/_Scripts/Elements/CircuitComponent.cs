@@ -2,6 +2,7 @@
 using _Scripts.Enums;
 using _Scripts.UI;
 using Enums;
+using NaughtyAttributes;
 using SpiceSharp.Entities;
 using SpiceSharp.Simulations;
 using UnityEngine;
@@ -15,6 +16,23 @@ namespace _Scripts.Elements
         [SerializeField] private protected Transform outputPoint;
         [Space, SerializeField] private protected float elementsValue;
 
+        #region Debug variables
+        #if UNITY_EDITOR
+        [ShowNonSerializedField, Foldout("Info"), Label("In")]
+        private string _infoInNode;
+        [ShowNonSerializedField, Foldout("Info"), Label("Out")]
+        private string _infoOutNode;
+
+        private protected void UpdateInfoNodes()
+        {
+            _infoInNode = GetInNode();
+            _infoOutNode = GetOutNode();
+        }
+        
+        #endif
+        #endregion
+        
+        
         private protected string ElementName { private set; get;}
         private readonly ElementData _elementData = new();
         public virtual Entity EntityComponent => null;

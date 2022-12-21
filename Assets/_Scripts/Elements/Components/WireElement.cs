@@ -11,7 +11,14 @@ namespace _Scripts.Elements.Components
         private ICircuitComponent _inputComponent;
         private ICircuitComponent _outputComponent;
         private LosslessTransmissionLine _entity;
-        public override Entity EntityComponent => _entity;
+        public override Entity EntityComponent
+        {
+            get
+            {
+                UpdateInfoNodes();
+                return _entity;
+            }
+        }
         
         public override string GetInNode() => _inputComponent.GetOutNode();
         public override string GetOutNode() => _inputComponent.GetInNode();

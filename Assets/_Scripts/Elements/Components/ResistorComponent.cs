@@ -6,7 +6,15 @@ namespace _Scripts.Elements.Components
     public class ResistorComponent : CircuitComponent
     {
         private Resistor _entity;
-        public override Entity EntityComponent => _entity;
+
+        public override Entity EntityComponent
+        {
+            get
+            {
+                UpdateInfoNodes();
+                return _entity;
+            }
+        }
         
         private protected override void Start()
         {

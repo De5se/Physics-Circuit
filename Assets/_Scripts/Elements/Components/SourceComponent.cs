@@ -1,24 +1,25 @@
-﻿using SpiceSharp.Components;
+﻿using NaughtyAttributes;
+using SpiceSharp.Components;
 using SpiceSharp.Entities;
 
 namespace _Scripts.Elements.Components
 {
     public class SourceComponent : CircuitComponent
     {
-        private VoltageSource _entity;
-        public override Entity EntityComponent => _entity;
+        [ShowNonSerializedField] private bool _isFirstSource;
 
-        private bool _isFirstSource;
+        public override Entity EntityComponent
+        {
+            get
+            {
+                UpdateInfoNodes();
+                return new VoltageSource(ElementName, GetInNode(), GetOutNode(), elementsValue);
+            }
+        }
 
         // If this is the first voltage source we are adding, make sure one of 
         // the ends is specified as ground, or "0" Volt point of reference.
         public override string GetInNode() => _isFirstSource ? "0" : base.GetInNode();
-        
-        private protected override void Start()
-        {
-            base.Start();
-            _entity = new VoltageSource(ElementName, GetInNode(), GetOutNode(), elementsValue);
-        }
         
         public void SetAsFirstSource()
         {

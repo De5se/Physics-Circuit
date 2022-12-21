@@ -7,7 +7,7 @@ namespace _Scripts.Elements.Components
     public class NodeElement : ElementWithMotion, ICircuitComponent
     {
         [SerializeField] private protected Transform wiresPoint;
-        [ShowNonSerializedField, Foldout("Info")]
+        [ShowNonSerializedField]
         private string _node;
         
         #region ICircuitComponent mothods
