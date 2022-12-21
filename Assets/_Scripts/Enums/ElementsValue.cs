@@ -1,8 +1,9 @@
-﻿namespace Enums
+﻿namespace _Scripts.Enums
 {
     public enum ElementsValue
     {
-        Current,
-        Voltage
+        A,
+        V,
+        R
     }
 }

@@ -1,4 +1,5 @@
-﻿using Enums;
+﻿using System;
+using Enums;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -11,10 +12,17 @@ namespace _Scripts.Elements.Components
         private string _node;
         
         #region ICircuitComponent mothods
+
+        public Action DestroyAction { get; set; }
         public Transform GetInputPoint() => wiresPoint;
         public Transform GetOutputPoint() => wiresPoint;
         public string GetInNode() => _node;
         public string GetOutNode() => _node;
+        public override void Destroy()
+        {
+            base.Destroy();
+            DestroyAction?.Invoke();
+        }
         #endregion
         
         private protected override void Start()

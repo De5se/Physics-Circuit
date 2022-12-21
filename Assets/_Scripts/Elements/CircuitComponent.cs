@@ -1,4 +1,8 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using _Scripts.Circuit_Simulator;
 using _Scripts.Enums;
 using _Scripts.UI;
 using Enums;
@@ -32,12 +36,12 @@ namespace _Scripts.Elements
         #endif
         #endregion
         
-        
         private protected string ElementName { private set; get;}
         private readonly ElementData _elementData = new();
         public virtual Entity EntityComponent => null;
         
         #region ICircuitComponent mothods
+        public Action DestroyAction { get; set; }
         public virtual Transform GetInputPoint() => inputPoint;
         public virtual Transform GetOutputPoint() => outputPoint;
 
@@ -45,8 +49,16 @@ namespace _Scripts.Elements
         private string _outNode;
         public virtual string GetInNode() => _inNode;
         public virtual string GetOutNode() => _outNode;
+        public override void Destroy()
+        {
+            base.Destroy();
+            CircuitSimulator.Instance.RemoveElement(this);
+            DestroyAction?.Invoke();
+        }
         #endregion
         
+        private protected List<ExportData> Expotrs = new();
+
         private protected override void Start()
         {
             base.Start();
@@ -64,23 +76,13 @@ namespace _Scripts.Elements
 
         public virtual void UpdateExports(OP op)
         {
-            return;
-            _elementData.VoltageExport =
-                new RealVoltageExport(op, GetOutNode()/*isSource ? GetOutNode() : GetInNode()*/);
-            _elementData.CurrentExport =
-                new RealPropertyExport(op, ElementName, "i");
+            Expotrs.Clear();
         }
 
-        public virtual void CatchExportedData()
+        public void CatchExportedData()
         {
-            return;
-            // Update the voltage value
-            var voltage = _elementData.VoltageExport.Value;
-            _elementData.ChangeValue(ElementsValue.Voltage, voltage);
-
-            // Update the current value
-            var current = _elementData.CurrentExport.Value;
-            _elementData.ChangeValue(ElementsValue.Current, current);
+            var values = Expotrs.Aggregate("", (current, export) => current + export.ToString());
+            _elementData.ChangeValues(values);
         }
         #endregion
 
@@ -121,11 +123,5 @@ namespace _Scripts.Elements
             return elementsValue.ToString(CultureInfo.InvariantCulture);
         }
         #endregion
-        
-        private protected virtual void OnDestroy()
-        {
-            //if (CircuitSimulator.Instance) CircuitSimulator.Instance.RemoveElement(this);
-            // ToDo remove element with wires
-        }
     }
 }

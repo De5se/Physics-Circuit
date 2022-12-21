@@ -1,4 +1,5 @@
-﻿using SpiceSharp.Components;
+﻿using System;
+using SpiceSharp.Components;
 using SpiceSharp.Entities;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ namespace _Scripts.Elements.Components
         }
         
         public override string GetInNode() => _inputComponent.GetOutNode();
-        public override string GetOutNode() => _inputComponent.GetInNode();
+        public override string GetOutNode() => _outputComponent.GetInNode();
         
         public void Init(ICircuitComponent inputElement, ICircuitComponent outputElement)
         {
@@ -30,12 +31,22 @@ namespace _Scripts.Elements.Components
             inputPoint = _inputComponent.GetOutputPoint();
             _outputComponent = outputElement;
             outputPoint = _outputComponent.GetInputPoint();
+            
+            _inputComponent.DestroyAction += Destroy;
+            _outputComponent.DestroyAction += Destroy;
         }
 
         private protected override void Start()
         {
             base.Start();
             _entity = new LosslessTransmissionLine(ElementName, GetInNode(), GetOutNode(), GetOutNode(), GetInNode());
+        }
+
+        public override void Destroy()
+        {
+            base.Destroy();
+            _inputComponent.DestroyAction -= Destroy;
+            _outputComponent.DestroyAction -= Destroy;
         }
 
         private protected override void Update()

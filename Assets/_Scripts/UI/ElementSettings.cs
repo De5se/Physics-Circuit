@@ -85,7 +85,7 @@ namespace _Scripts.UI
 
         public void RemoveElement()
         {
-            Destroy(_currentElement.gameObject);
+            _currentElement.Destroy();
             CloseSettings();
         }
         #endregion

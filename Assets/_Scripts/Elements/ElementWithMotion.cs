@@ -151,5 +151,10 @@ namespace _Scripts.Elements
             return inputInfoText;
         }
         #endregion
+
+        public virtual void Destroy()
+        {
+            Destroy(gameObject);
+        }
     }
 }
