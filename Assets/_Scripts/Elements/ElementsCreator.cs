@@ -23,7 +23,8 @@ namespace _Scripts.Elements
 
         public void CreateElement(ElementWithMotion targetElement, Vector2 creationPosition)
         {
-            if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (EventSystem.current.IsPointerOverGameObject() || Input.touchCount > 0 &&
+                EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)) return;
             Instantiate(targetElement, creationPosition, quaternion.identity, transform);
         }
 

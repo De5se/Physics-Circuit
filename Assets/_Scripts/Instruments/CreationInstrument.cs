@@ -23,41 +23,42 @@ namespace _Scripts.UI
         {
         }
 
-
+        private bool _isOnImage;
+        
         private void Update()
         {
             if (Input.GetMouseButtonDown(0))
             {
-                OnMouseDown();
+                OnMouseButtonDown();
             }
-
             if (Input.GetMouseButton(0))
             {
                 OnGetMouseButton();
             }
             if (Input.GetMouseButtonUp(0))
             {
-                OnMouseUp();
+                OnMouseButtonUp();
             }
         }
 
-        private void OnMouseDown()
+        private void OnMouseButtonDown()
         {
             _canBeCreated = _toggle.isOn && EventSystem.current.IsPointerOverGameObject() == false;
             _startPosition = Input.mousePosition;
+            _isOnImage = false;
         }
 
         private void OnGetMouseButton()
         {
             _canBeCreated = _canBeCreated && (_startPosition == Input.mousePosition);
+
+            _isOnImage = EventSystem.current.IsPointerOverGameObject() || Input.touchCount > 0 &&
+                EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId);
         }
 
-        private void OnMouseUp()
+        private void OnMouseButtonUp()
         {
-            _canBeCreated = _canBeCreated 
-                            && EventSystem.current.IsPointerOverGameObject() == false;
-            
-            if (!_canBeCreated)
+            if (!_canBeCreated || _isOnImage)
             {
                 return;
             }

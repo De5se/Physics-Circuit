@@ -82,7 +82,7 @@ MonoBehaviour:
   elementType: 0
   inputPoint: {fileID: 1241892324058245254}
   outputPoint: {fileID: 4861458590984510857}
-  elementsValue: 220
+  elementsValue: 5
   isVoltageSource: 0
 --- !u!1 &5821113915103083743
 GameObject:

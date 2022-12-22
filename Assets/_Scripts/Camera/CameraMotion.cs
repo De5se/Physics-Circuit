@@ -71,7 +71,8 @@ public class CameraMotion : Singleton<CameraMotion>
     {
         IsCameraChangedPosition = false;
         
-        if (EventSystem.current.IsPointerOverGameObject()) return;
+        if (EventSystem.current.IsPointerOverGameObject() || Input.touchCount > 0 &&
+            EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)) return;
         _isMotion = true;
         _startTouchPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
     }
